@@ -37,3 +37,5 @@ desktop.ini
 *.grc.json
 exports/
 !tests/fixtures/*.grc.json
+# Filer som Claude skapar i projektmappen (hör inte till koden)
+Claude outputs/
