@@ -1,0 +1,410 @@
+# ISO/IEC 27001:2022 — krav och Annex A-kontroller
+# Flyttad från method-grc-verktyg.html (fas 0). Redigera här, inte i koden.
+# ID:n är alltid strängar. "guidance" = vad revisorn förväntar sig se som bevis.
+
+schemaVersion: 1
+id: iso27001
+version: '2022'
+name: ISO/IEC 27001:2022
+language: sv
+sections:
+  - id: clauses
+    title: Grundläggande krav
+    soa: false
+    unit: krav
+    groups:
+      - id: '4'
+        title: Organisationens förutsättningar
+        controls:
+          - id: '4.1'
+            title: Kontextanalys av interna och externa frågor
+            guidance: Dokumenterad analys av interna och externa frågor som påverkar ledningssystemet, t.ex. i en ISMS-beskrivning. Ska hänga ihop med riskbedömningen.
+          - id: '4.2'
+            title: Intressentanalys med tillämpliga krav
+            guidance: 'Förteckning över intressenter och deras krav: legala, regulatoriska och avtalsmässiga. Revisorn följer spårbarheten vidare till 5.31 och regelefterlevnadsregistret.'
+          - id: '4.3'
+            title: Ledningssystemets omfattning (scope)
+            guidance: Obligatoriskt dokument. Omfattning med gränser, beroenden mot externa parter samt motiverade undantag.
+          - id: '4.4'
+            title: Etablerat och underhållet ISMS
+            guidance: Beskrivning av ledningssystemets processer och hur de samverkar. Visas ofta genom processkarta plus levande styrdokument.
+      - id: '5'
+        title: Ledarskap
+        controls:
+          - id: '5.1'
+            title: Ledningens åtagande och styrning
+            guidance: Visas genom protokoll, resurstilldelning, beslutade mål och ledningens deltagande. Revisorn intervjuar normalt ledningen direkt.
+          - id: '5.2'
+            title: Informationssäkerhetspolicy
+            guidance: Obligatoriskt dokument. Beslutad av ledningen, kommunicerad internt, tillgänglig för relevanta intressenter och periodiskt granskad.
+          - id: '5.3'
+            title: Roller, ansvar och befogenheter
+            guidance: Dokumenterade rolltilldelningar (t.ex. CISO, riskägare, systemägare) och rapporteringsvägar till högsta ledningen.
+      - id: '6'
+        title: Planering
+        controls:
+          - id: '6.1.1'
+            title: Hantering av risker och möjligheter
+            guidance: Koppling mellan kontextanalysen (4.1, 4.2) och de risker och möjligheter ledningssystemet ska hantera.
+          - id: '6.1.2'
+            title: Dokumenterad metod för riskbedömning
+            guidance: Obligatoriskt. Metod med riskkriterier och acceptanskriterier som ger jämförbara, repeterbara resultat. Riskägare ska vara utpekade.
+          - id: '6.1.3'
+            title: Riskbehandlingsplan
+            guidance: Riskbehandlingsplan med åtgärder, ansvariga och tidsättning. Riskägarnas godkännande av planen och av kvarvarande restrisker ska kunna visas.
+          - id: '6.1.3 d'
+            title: Statement of Applicability (SoA)
+            guidance: Obligatoriskt dokument enligt 6.1.3 d. Alla Annex A-kontroller med motivering för tillämplighet, motivering för bortval och implementeringsstatus. Byggs här under fliken SoA.
+          - id: '6.2'
+            title: Mätbara informationssäkerhetsmål
+            guidance: Obligatorisk dokumentation. Mätbara mål på relevanta nivåer, kommunicerade, med planer för hur de ska nås och uppföljning av utfall.
+          - id: '6.3'
+            title: Planering av ändringar i ledningssystemet
+            guidance: Bevis på att ändringar i ISMS genomförs planerat, t.ex. ändringslogg eller beslut i ledningsforum.
+      - id: '7'
+        title: Stöd
+        controls:
+          - id: '7.1'
+            title: Resurser för ledningssystemet
+            guidance: Budget, bemanning och verktyg avsatta för ISMS. Visas ofta via verksamhetsplan och intervjuer.
+          - id: '7.2'
+            title: Kompetens och kompetensbevis
+            guidance: Obligatorisk dokumentation. Utbildningsregister, certifikat och CV för nyckelroller, samt åtgärder vid kompetensgap.
+          - id: '7.3'
+            title: Medvetenhet hos personalen
+            guidance: Genomförda utbildningar med närvaro- eller genomförandebevis, kampanjer, gärna mätning som phishing-tester. Personalen ska känna till policyn och sitt bidrag.
+          - id: '7.4'
+            title: Intern och extern kommunikation
+            guidance: Plan för vad som kommuniceras, när, till vem och av vem, både internt och externt.
+          - id: '7.5'
+            title: Styrning av dokumenterad information
+            guidance: Versionshantering, godkännandeflöden, åtkomststyrning och hantering av dokument från externa parter.
+      - id: '8'
+        title: Verksamhet
+        controls:
+          - id: '8.1'
+            title: Verksamhetsstyrning inklusive utkontrakterade processer
+            guidance: Rutiner för att processer genomförs styrt, samt styrning av processer som utförs av externa leverantörer.
+          - id: '8.2'
+            title: Genomförda riskbedömningar med planerade intervall
+            guidance: Obligatoriskt. Dokumenterade resultat från riskbedömningar, genomförda med planerade intervall och vid väsentliga förändringar.
+          - id: '8.3'
+            title: Genomförd riskbehandling
+            guidance: Obligatoriskt. Dokumenterade resultat av riskbehandlingen, dvs. att planen i 6.1.3 faktiskt genomförts och följts upp.
+      - id: '9'
+        title: Utvärdering av prestanda
+        controls:
+          - id: '9.1'
+            title: Mätning, analys och utvärdering
+            guidance: Obligatoriskt. Bestämt vad som mäts, hur, när och av vem, samt dokumenterade resultat. KPI:er kopplade till målen i 6.2.
+          - id: '9.2'
+            title: Internt revisionsprogram och genomförda revisioner
+            guidance: Obligatoriskt. Revisionsprogram, revisionsrapporter och bevis på att revisorerna är objektiva och opartiska. Hela ISMS ska täckas över tid.
+          - id: '9.3'
+            title: Ledningens genomgång
+            guidance: Obligatoriskt. Protokoll som visar att samtliga föreskrivna underlag behandlats (avvikelser, mätresultat, revisionsresultat, risker) och vilka beslut som fattats.
+      - id: '10'
+        title: Förbättringar
+        controls:
+          - id: '10.1'
+            title: Ständig förbättring
+            guidance: Bevis på att ledningssystemet förbättras över tid, t.ex. förbättringslogg, trender och genomförda förbättringsåtgärder.
+          - id: '10.2'
+            title: Avvikelser och korrigerande åtgärder
+            guidance: Obligatoriskt. Avvikelseregister med orsaksanalys, korrigerande åtgärder och kontroll av att åtgärderna haft effekt.
+  - id: annex-a
+    title: Annex A
+    soa: true
+    unit: kontroller
+    groups:
+      - id: A.5
+        title: Organisatoriska kontroller
+        controls:
+          - id: A.5.1
+            title: Policyer för informationssäkerhet
+            guidance: Beslutad huvudpolicy och ämnespolicyer, bevis på kommunikation och periodisk översyn.
+          - id: A.5.2
+            title: Roller och ansvar för informationssäkerhet
+            guidance: Rollbeskrivningar, utnämningar, ansvarsmatris (t.ex. RACI).
+          - id: A.5.3
+            title: Uppdelning av arbetsuppgifter
+            guidance: Identifierade oförenliga roller och hur de separerats, alternativt kompenserande kontroller med motivering.
+          - id: A.5.4
+            title: Ledningens ansvar
+            guidance: 'Bevis på att ledningen kräver efterlevnad: direktiv, uppföljning i medarbetarsamtal, konsekvenshantering.'
+          - id: A.5.5
+            title: Kontakt med myndigheter
+            guidance: Kontaktlista och rutin för när och hur myndigheter kontaktas, t.ex. vid incident (MCF, IMY, polis).
+          - id: A.5.6
+            title: Kontakt med särskilda intressegrupper
+            guidance: Medlemskap i forum, branschnätverk, prenumerationer på säkerhetsbulletiner.
+          - id: A.5.7
+            title: Hotunderrättelser
+            guidance: Definierade källor, rutin för insamling och analys samt bevis på att underrättelser faktiskt används i riskarbete och skydd.
+          - id: A.5.8
+            title: Informationssäkerhet i projektledning
+            guidance: Projektmodell med säkerhetskrav och kontrollpunkter, exempel från genomförda projekt.
+          - id: A.5.9
+            title: Förteckning över information och andra tillgångar
+            guidance: Aktuellt tillgångsregister med utpekade ägare.
+          - id: A.5.10
+            title: Godtagbar användning av information och tillgångar
+            guidance: Beslutade regler för godtagbar användning, kvitterade av användarna.
+          - id: A.5.11
+            title: Återlämning av tillgångar
+            guidance: Offboarding-rutin med kvittens på återlämnad utrustning och behörigheter.
+          - id: A.5.12
+            title: Klassificering av information
+            guidance: Beslutad klassificeringsmodell och bevis på att den tillämpas i verksamheten.
+          - id: A.5.13
+            title: Märkning av information
+            guidance: Märkningsrutin kopplad till klassningen, exempel i dokument och system.
+          - id: A.5.14
+            title: Informationsöverföring
+            guidance: Regler för överföring av information, avtal vid extern överföring, säkra kanaler.
+          - id: A.5.15
+            title: Styrning av åtkomst
+            guidance: Åtkomstpolicy med regler för tilldelning utifrån verksamhets- och säkerhetskrav.
+          - id: A.5.16
+            title: Identitetshantering
+            guidance: Hantering av identiteters livscykel, unika identiteter, hantering av delade konton.
+          - id: A.5.17
+            title: Autentiseringsinformation
+            guidance: Lösenordskrav, säker distribution av inloggningsuppgifter, rutin vid kompromettering.
+          - id: A.5.18
+            title: Åtkomsträttigheter
+            guidance: Process för beställning och ändring av behörigheter samt genomförda periodiska behörighetsgranskningar.
+          - id: A.5.19
+            title: Informationssäkerhet i leverantörsrelationer
+            guidance: Leverantörspolicy, säkerhetskrav i upphandling, riskbedömning av leverantörer.
+          - id: A.5.20
+            title: Informationssäkerhet i leverantörsavtal
+            guidance: Säkerhetsklausuler i avtal, personuppgiftsbiträdesavtal där det krävs.
+          - id: A.5.21
+            title: Hantering av informationssäkerhet i IKT-leveranskedjan
+            guidance: Krav som förs vidare nedströms i leveranskedjan, granskning av underleverantörer.
+          - id: A.5.22
+            title: Övervakning, granskning och förändringshantering av leverantörstjänster
+            guidance: Genomförd leverantörsuppföljning, SLA-granskning, hantering av förändringar i tjänsten.
+          - id: A.5.23
+            title: Informationssäkerhet vid användning av molntjänster
+            guidance: Molnpolicy, ansvarsfördelning mot leverantören, krav vid anskaffning och exit-strategi.
+          - id: A.5.24
+            title: Planering och förberedelse för incidenthantering
+            guidance: Incidenthanteringsplan med roller, ansvar och kontaktvägar, kommunicerad till berörda.
+          - id: A.5.25
+            title: Bedömning av och beslut om informationssäkerhetshändelser
+            guidance: Kriterier för att klassa händelser som incidenter samt logg över gjorda bedömningar.
+          - id: A.5.26
+            title: Hantering av informationssäkerhetsincidenter
+            guidance: Dokumenterad incidentrutin och ärendelogg som visar att den följs.
+          - id: A.5.27
+            title: Lärdomar från informationssäkerhetsincidenter
+            guidance: 'Bevis på lessons learned: analyser efter incident och förbättringar som genomförts.'
+          - id: A.5.28
+            title: Insamling av bevis
+            guidance: Rutin för forensisk bevissäkring med spårbarhet och bevarandekedja.
+          - id: A.5.29
+            title: Informationssäkerhet vid störningar
+            guidance: Kontinuitetsplaner som inkluderar krav på informationssäkerhet även under störning.
+          - id: A.5.30
+            title: IKT-beredskap för verksamhetskontinuitet
+            guidance: Konsekvensanalys (BIA), IKT-kontinuitetsplaner och resultat från genomförda tester.
+          - id: A.5.31
+            title: Legala, regulatoriska och avtalsmässiga krav
+            guidance: Aktuellt regelefterlevnadsregister, kopplat till intressentanalysen i kapitel 4.
+          - id: A.5.32
+            title: Immateriella rättigheter
+            guidance: Rutin för licensefterlevnad och hantering av upphovsrättsskyddat material.
+          - id: A.5.33
+            title: Skydd av redovisande dokument
+            guidance: Arkiveringsregler, skydd mot förlust och förvanskning, gallringsbeslut.
+          - id: A.5.34
+            title: Integritet och skydd av personuppgifter
+            guidance: 'GDPR-styrning: register över behandlingar, biträdesavtal, rutiner för registrerades rättigheter.'
+          - id: A.5.35
+            title: Oberoende granskning av informationssäkerhet
+            guidance: Genomförda oberoende granskningar med rapporter och åtgärdade observationer.
+          - id: A.5.36
+            title: Efterlevnad av policyer, regler och standarder
+            guidance: Genomförda efterlevnadskontroller och rapportering av resultatet till ansvariga.
+          - id: A.5.37
+            title: Dokumenterade driftrutiner
+            guidance: Aktuella driftrutiner tillgängliga för dem som behöver dem.
+      - id: A.6
+        title: Personrelaterade kontroller
+        controls:
+          - id: A.6.1
+            title: Bakgrundskontroll
+            guidance: Rutin för bakgrundskontroll proportionerlig mot rollens känslighet samt bevis på genomförda kontroller.
+          - id: A.6.2
+            title: Anställningsvillkor
+            guidance: Anställningsavtal som anger ansvar för informationssäkerhet.
+          - id: A.6.3
+            title: Medvetenhet, utbildning och träning i informationssäkerhet
+            guidance: Utbildningsplan och genomförandebevis, gärna kompletterat med t.ex. phishing-tester.
+          - id: A.6.4
+            title: Disciplinär process
+            guidance: Dokumenterad och kommunicerad process för hantering av överträdelser.
+          - id: A.6.5
+            title: Ansvar efter anställningens upphörande eller förändring
+            guidance: Avslutsrutin som tydliggör kvarstående ansvar, t.ex. fortsatt sekretess.
+          - id: A.6.6
+            title: Sekretess- eller tystnadsavtal
+            guidance: Signerade sekretessavtal för anställda och konsulter, periodiskt granskade.
+          - id: A.6.7
+            title: Distansarbete
+            guidance: Policy för distansarbete med tekniska och fysiska skyddskrav.
+          - id: A.6.8
+            title: Rapportering av informationssäkerhetshändelser
+            guidance: Känd och lättanvänd rapporteringskanal, bevis på att personalen vet hur den används.
+      - id: A.7
+        title: Fysiska kontroller
+        controls:
+          - id: A.7.1
+            title: Fysiska säkerhetsperimetrar
+            guidance: Definierade säkerhetszoner och skalskydd för utrymmen med känslig information.
+          - id: A.7.2
+            title: Fysiskt tillträde
+            guidance: Passersystem, besöksrutin och tillträdesloggar.
+          - id: A.7.3
+            title: Skydd av kontor, rum och faciliteter
+            guidance: Skydd anpassat efter verksamheten, t.ex. placering av känsliga utrymmen utan insyn.
+          - id: A.7.4
+            title: Övervakning av fysisk säkerhet
+            guidance: Larm, kameror eller bevakning samt rutin för granskning av larm och loggar.
+          - id: A.7.5
+            title: Skydd mot fysiska och miljörelaterade hot
+            guidance: Skydd mot brand, vatten och andra miljöhot, t.ex. brandskyddsdokumentation.
+          - id: A.7.6
+            title: Arbete i säkra utrymmen
+            guidance: Särskilda regler för arbete i säkra utrymmen, kända av berörd personal.
+          - id: A.7.7
+            title: Rent skrivbord och ren skärm
+            guidance: Beslutad clear desk/clear screen-regel, gärna med genomförda stickprov.
+          - id: A.7.8
+            title: Placering och skydd av utrustning
+            guidance: Utrustning placerad och skyddad mot obehörig åtkomst och miljöpåverkan.
+          - id: A.7.9
+            title: Säkerhet för tillgångar utanför organisationens lokaler
+            guidance: Regler för utrustning och information utanför lokalerna, t.ex. vid resor.
+          - id: A.7.10
+            title: Lagringsmedia
+            guidance: Rutin för hantering, transport och destruktion av lagringsmedia under hela livscykeln.
+          - id: A.7.11
+            title: Försörjningssystem
+            guidance: UPS, reservkraft eller motsvarande skydd mot avbrott i försörjningssystem.
+          - id: A.7.12
+            title: Kablagesäkerhet
+            guidance: Skyddad kabeldragning för kraft och kommunikation.
+          - id: A.7.13
+            title: Underhåll av utrustning
+            guidance: Underhållsavtal och servicelogg som visar korrekt underhåll.
+          - id: A.7.14
+            title: Säker avveckling eller återanvändning av utrustning
+            guidance: Raderingsintyg eller destruktionsbevis innan utrustning lämnar organisationen.
+      - id: A.8
+        title: Tekniska kontroller
+        controls:
+          - id: A.8.1
+            title: Användarnas slutpunktsenheter
+            guidance: Hårdning, kryptering och central hantering (t.ex. MDM) av klienter och mobila enheter.
+          - id: A.8.2
+            title: Privilegierade åtkomsträttigheter
+            guidance: Separata administratörskonton, restriktiv tilldelning och periodisk granskning av privilegier.
+          - id: A.8.3
+            title: Begränsning av informationsåtkomst
+            guidance: Behörighetsstyrning per system enligt need-to-know, kopplad till klassningen.
+          - id: A.8.4
+            title: Åtkomst till källkod
+            guidance: Styrd och loggad åtkomst till kodförråd och utvecklingsverktyg.
+          - id: A.8.5
+            title: Säker autentisering
+            guidance: Multifaktorautentisering och säkra inloggningsflöden, särskilt för exponerade och privilegierade konton.
+          - id: A.8.6
+            title: Kapacitetshantering
+            guidance: Kapacitetsövervakning och prognoser för kritiska resurser.
+          - id: A.8.7
+            title: Skydd mot skadlig kod
+            guidance: Centralt hanterat skydd (t.ex. EDR) i kombination med användarmedvetenhet.
+          - id: A.8.8
+            title: Hantering av tekniska sårbarheter
+            guidance: Sårbarhetsskanning, patchprocess och tidskrav för åtgärd av kritiska sårbarheter.
+          - id: A.8.9
+            title: Konfigurationshantering
+            guidance: Beslutade baselines och kontroll av att konfigurationer inte avviker.
+          - id: A.8.10
+            title: Radering av information
+            guidance: Rutin för radering när information inte längre behövs, kopplad till gallringsbeslut.
+          - id: A.8.11
+            title: Datamaskering
+            guidance: Maskering eller pseudonymisering där det krävs, t.ex. i test och analys.
+          - id: A.8.12
+            title: Förebyggande av dataläckage
+            guidance: DLP-åtgärder eller motsvarande övervakning av känsliga informationsflöden.
+          - id: A.8.13
+            title: Säkerhetskopiering av information
+            guidance: Backuprutin samt dokumenterade återläsningstester med resultat.
+          - id: A.8.14
+            title: Redundans i informationsbehandlingsresurser
+            guidance: Redundant infrastruktur för kritiska system, gärna med failover-tester.
+          - id: A.8.15
+            title: Loggning
+            guidance: 'Loggningsstandard: vad som loggas, skydd av loggar mot manipulation, lagringstid.'
+          - id: A.8.16
+            title: Övervakningsaktiviteter
+            guidance: Övervakning av nät och system (t.ex. SIEM) med rutin för larmhantering.
+          - id: A.8.17
+            title: Klocksynkronisering
+            guidance: Tidssynkronisering mot gemensam källa för korrelering av loggar.
+          - id: A.8.18
+            title: Användning av privilegierade verktygsprogram
+            guidance: Begränsad och loggad användning av verktyg som kan kringgå skyddsåtgärder.
+          - id: A.8.19
+            title: Installation av programvara i driftsystem
+            guidance: Kontrollerad installation, t.ex. vitlistning eller begränsade installationsrättigheter.
+          - id: A.8.20
+            title: Nätverkssäkerhet
+            guidance: Nätverksdesign, brandväggsregler och periodisk granskning av regelverket.
+          - id: A.8.21
+            title: Säkerhet för nätverkstjänster
+            guidance: Säkerhetskrav på nätverkstjänster definierade och avtalade, internt eller mot leverantör.
+          - id: A.8.22
+            title: Segmentering av nätverk
+            guidance: Segmenteringsmodell som separerar miljöer och känsliga system.
+          - id: A.8.23
+            title: Webbfiltrering
+            guidance: Filtrering av åtkomst till skadliga eller otillåtna webbplatser.
+          - id: A.8.24
+            title: Användning av kryptografi
+            guidance: Kryptopolicy med godkända algoritmer och rutin för nyckelhantering.
+          - id: A.8.25
+            title: Säker utvecklingslivscykel
+            guidance: Utvecklingsprocess med definierade säkerhetsaktiviteter genom hela livscykeln.
+          - id: A.8.26
+            title: Säkerhetskrav på applikationer
+            guidance: Säkerhetskrav i kravställning, även vid inköp av färdiga applikationer.
+          - id: A.8.27
+            title: Säker systemarkitektur och konstruktionsprinciper
+            guidance: Beslutade arkitekturprinciper, t.ex. security by design, tillämpade i projekt.
+          - id: A.8.28
+            title: Säker kodning
+            guidance: Kodningsstandard och bevis på kodgranskning.
+          - id: A.8.29
+            title: Säkerhetstestning i utveckling och acceptans
+            guidance: Säkerhetstester och acceptanskriterier, t.ex. penetrationstester före driftsättning.
+          - id: A.8.30
+            title: Utkontrakterad utveckling
+            guidance: Säkerhetskrav på utvecklingsleverantörer och granskning av levererat resultat.
+          - id: A.8.31
+            title: Separation av utvecklings-, test- och driftmiljöer
+            guidance: Separerade miljöer och kontrollerad väg till produktion.
+          - id: A.8.32
+            title: Förändringshantering
+            guidance: Ändringsprocess med riskbedömning, godkännande och spårbarhet.
+          - id: A.8.33
+            title: Testinformation
+            guidance: Skyddad eller avidentifierad testdata, aldrig okontrollerad produktionsdata i test.
+          - id: A.8.34
+            title: Skydd av informationssystem vid revision
+            guidance: Planerade och godkända revisionstester som inte stör produktionen.
