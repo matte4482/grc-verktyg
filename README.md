@@ -10,7 +10,7 @@ Verktyget är en fristående webbapp utan server. Varje kunduppdrag sparas som e
 
 Det är ett nytt verktyg, byggt från grunden. Det gamla enfilsverktyget (`legacy/method-grc-verktyg.html`) är förebild för innehåll och arbetssätt, men dess sparfiler går inte att öppna i det nya (ARCHITECTURE B-16).
 
-> **Designbeslut** och skälen bakom dem finns i [ARCHITECTURE.md](ARCHITECTURE.md). Läs den först när du tar upp arbetet på en ny dator. Planen med faser och milstolpar finns i [docs/plan-2.0.md](docs/plan-2.0.md).
+> **Designbeslut** och skälen bakom dem finns i [ARCHITECTURE.md](ARCHITECTURE.md). Läs den först när du tar upp arbetet på en ny dator. Planen med faser och milstolpar (Plan 2.0) hålls utanför repot.
 
 **Innehåll**
 
@@ -52,7 +52,6 @@ grc-tool/
 ├── index.html                        ✅ HTML-mallen som Vite bygger från
 ├── package.json / package-lock.json  ✅
 ├── vite.config.ts                    ✅ Svelte, YAML-import, bygge till en fil
-├── docs/plan-2.0.md                  ✅ faser, milstolpar och beslut som behövs
 ├── legacy/method-grc-verktyg.html    ✅ det gamla verktyget, bara som referens
 ├── scripts/
 │   ├── extract-framework.mjs         ✅ engångsskript: gamla HTML-verktyget → YAML
@@ -372,13 +371,14 @@ Schemat finns i [`src/lib/project/schema.ts`](src/lib/project/schema.ts), och en
 
 - **Designbeslut** skrivs in i [ARCHITECTURE.md](ARCHITECTURE.md) i samma commit som koden som följer av beslutet.
 - **Nya paket** installeras med `npm install`, och både `package.json` och `package-lock.json` committas.
+- **Planer, rapporter och andra dokument** hålls utanför repot. Repot innehåller bara kod och det som beskriver koden: README och ARCHITECTURE.
 - **Kunddata committas aldrig.** `*.grc.json` och `exports/` är ignorerade. Testfiler läggs avidentifierade i `tests/fixtures/`.
 - **Sökvägar i skript** byggs med `node:path` (`join`, `resolve`), aldrig med hårdkodade snedstreck. Utvecklingen sker på både Mac och Windows.
 - **Innan commit:** kör `npm test` och `npm run check`.
 
 ## 8. Faser
 
-Faserna följer [Plan 2.0](docs/plan-2.0.md). Verktyget ska gå att använda efter varje milstolpe.
+Faserna följer Plan 2.0, som hålls utanför repot. Verktyget ska gå att använda efter varje milstolpe.
 
 | Fas | Innehåll | Milstolpe | Status |
 |---|---|---|---|

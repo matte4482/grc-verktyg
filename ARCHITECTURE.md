@@ -19,9 +19,9 @@ Nya beslut läggs till sist, med nästa lediga nummer. Ett beslut som ändras sk
 
 ## Nuläge
 
-*Senast uppdaterad: 25 september 2026*
+*Senast uppdaterad: 26 september 2026*
 
-- **Fas:** 0 är klar. Nästa fas är 1, säkert filsparande (faser enligt [Plan 2.0](docs/plan-2.0.md), se B-19).
+- **Fas:** 0 är klar. Nästa fas är 1, säkert filsparande (faser enligt Plan 2.0, se B-19).
 - **Klart i fas 0:**
   - Projektet är uppsatt med Svelte, TypeScript och Vite.
   - ISO/IEC 27001:2022 är flyttat från det gamla verktyget (`legacy/method-grc-verktyg.html`) till YAML, med schema och test.
@@ -30,6 +30,7 @@ Nya beslut läggs till sist, med nästa lediga nummer. Ett beslut som ändras sk
   - Register över ramverk (B-21).
   - Bygget ger en enda fristående HTML-fil med säkerhetspolicy (B-03, B-20).
   - Vites startmall är ersatt av ett enkelt skal, och det felaktiga beroendet `npm` är borttaget.
+  - `npm test` och `npm run build` går igenom lokalt (26 september 2026).
 - **Nästa steg:** fas 1. Spara och Spara som med File System Access API, autosparning var tionde minut, sparstatus och varning vid stängning (Ö-01). Kontrollera först att `showSaveFilePicker` fungerar när verktyget öppnas från disk (`file://`) i Chrome och Edge.
 - **Väntar på beslut:** Ö-03 (regel för restrisk), senast före fas 3.
 
@@ -272,7 +273,7 @@ Inloggning mot kundens molnmiljö kräver ett riktigt program, eftersom en HTML-
 
 **Status:** Beslutat
 
-Arbetet följer de nio faserna (0–8) och milstolparna M1–M4 i [docs/plan-2.0.md](docs/plan-2.0.md), med ändringarna i B-16. Fastabellen i README är uppdaterad. Nya idéer läggs efter M4, inte i pågående fas.
+Arbetet följer de nio faserna (0–8) och milstolparna M1–M4 i Plan 2.0, med ändringarna i B-16. Fastabellen i README är uppdaterad. Nya idéer läggs efter M4, inte i pågående fas. Planen och rapporter om arbetet hålls utanför repot.
 
 ## B-20 · Säkerhetspolicy (CSP) i den byggda filen
 
@@ -300,7 +301,7 @@ Konsekvenser:
 - Zod får inte generera kod med `new Function`. `src/lib/zod-setup.ts` sätter `jitless: true` och importeras först i `main.ts`.
 - Om verktyget någon gång behöver nätet (till exempel CloudSecComp) blir det i skrivbordsversionen, inte genom att öppna CSP:n (B-18).
 
-Verifierat 25 september 2026 i Chromium med filen öppnad direkt från disk: projektlogik och zod fungerar, `fetch` blockeras och ett ändrat skript körs inte. Den byggda Svelte-appen ska också verifieras lokalt med `npm run build`.
+Verifierat 25 september 2026 i Chromium med filen öppnad direkt från disk: projektlogik och zod fungerar, `fetch` blockeras och ett ändrat skript körs inte. Hela bygget med Svelte-appen gick igenom lokalt den 26 september 2026.
 
 ## B-21 · Ramverksregister och felmeddelanden på svenska
 
