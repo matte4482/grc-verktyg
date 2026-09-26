@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Method · GRC-verktyg</title>
+<style>
+  :root{
+    --ink:#1C1B18;
+    --ink-soft:#4A4842;
+    --ink-faint:#8A867C;
+    --linen:#F7F5F0;
+    --paper:#FFFFFF;
+    --line:#E4E0D6;
+    --gold:#B8894A;
+    --gold-soft:#F0E6D6;
+    --green:#3B6D11;
+    --green-bg:#EAF3DE;
+    --amber:#BA7517;
+    --amber-bg:#FAEEDA;
+    --red:#A32D2D;
+    --red-bg:#FCEBEB;
+    --gray:#888780;
+    --gray-bg:#EEECE5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Calibri,'Segoe UI',Arial,sans-serif;background:var(--linen);color:var(--ink);font-size:15px;line-height:1.55;}
+  h1,h2,h3{font-family:Cambria,Georgia,'Times New Roman',serif;font-weight:400;}
+  .eyebrow{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:600;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+
+  header.app{background:var(--ink);color:#F2EFE8;padding:24px 0 0;}
+  .head-row{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;padding-bottom:20px;}
+  .brand .eyebrow{color:var(--gold);}
+  .brand h1{font-size:28px;color:#F2EFE8;letter-spacing:0.01em;}
+  .brand .client-input{margin-top:6px;display:block;background:transparent;border:none;border-bottom:1px solid #3D3B35;color:#F2EFE8;font-family:Cambria,Georgia,'Times New Roman',serif;font-size:14.5px;padding:3px 0;width:260px;}
+  .brand .client-input::placeholder{color:#8A867C;font-style:italic;}
+  .brand .client-input:focus{outline:none;border-bottom-color:var(--gold);}
+  .head-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .head-actions select{background:#2A2925;color:#F2EFE8;border:1px solid #3D3B35;padding:8px 12px;font-size:13px;font-family:inherit;}
+  button{font-family:inherit;font-size:13px;cursor:pointer;border:1px solid #3D3B35;background:transparent;color:#F2EFE8;padding:8px 14px;transition:all .15s;}
+  button:hover{border-color:var(--gold);color:var(--gold);}
+  #saveState{font-size:12px;color:#8A867C;margin-left:6px;min-width:110px;text-align:right;}
+
+  nav.tabs{display:flex;gap:0;}
+  nav.tabs button{border:none;border-bottom:3px solid transparent;padding:12px 20px;font-size:14px;color:#B7B3A8;letter-spacing:0.02em;}
+  nav.tabs button:hover{color:#F2EFE8;}
+  nav.tabs button.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+  .page{display:none;padding:32px 0 60px;}
+  .page.active{display:block;}
+  .page-head h2{font-size:24px;}
+  .page-head p{font-size:13.5px;color:var(--ink-faint);margin-top:4px;max-width:720px;}
+  .page-head .soa-sum{font-size:13.5px;color:var(--ink-soft);margin-top:8px;}
+  .page-head .soa-sum b{color:var(--gold);font-weight:600;}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:12px;margin-top:22px;}
+  .kpi{background:var(--paper);border:1px solid var(--line);padding:16px 18px;}
+  .kpi .num{font-family:Cambria,Georgia,serif;font-size:30px;line-height:1.1;}
+  .kpi .lbl{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px;}
+  .kpi.big{border-left:3px solid var(--gold);}
+  .kpi.big .num{color:var(--gold);font-size:38px;}
+  .part-label{margin-top:30px;font-family:Cambria,Georgia,serif;font-size:17px;color:var(--ink-soft);}
+  .themes{margin-top:10px;display:grid;gap:10px;}
+  .theme-bar{background:var(--paper);border:1px solid var(--line);padding:12px 20px;}
+  .theme-bar .tb-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;}
+  .theme-bar .tb-name{font-family:Cambria,Georgia,serif;font-size:15.5px;}
+  .theme-bar .tb-pct{font-size:12.5px;color:var(--ink-soft);}
+  .bar{display:flex;height:9px;margin-top:9px;background:var(--gray-bg);overflow:hidden;}
+  .bar span{display:block;height:100%;}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-size:12px;color:var(--ink-soft);}
+  .legend i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:22px 0;}
+  .toolbar input[type=search]{flex:1;min-width:220px;padding:9px 12px;border:1px solid var(--line);background:var(--paper);font-family:inherit;font-size:14px;color:var(--ink);}
+  .toolbar select{padding:9px 12px;border:1px solid var(--line);background:var(--paper);font-family:inherit;font-size:13px;color:var(--ink);}
+  .toolbar button{border-color:var(--line);color:var(--ink-soft);}
+  .toolbar button:hover{border-color:var(--gold);color:var(--gold);}
+  .toolbar label.toggle{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
+
+  .group{margin-bottom:26px;}
+  .group .ghead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:8px;}
+  .group .ghead h3{font-size:18px;}
+  .group .gcount{font-size:12px;color:var(--ink-faint);letter-spacing:0.08em;text-transform:uppercase;}
+
+  .ctrl{background:var(--paper);border:1px solid var(--line);border-top:none;}
+  .ctrl-row{display:grid;grid-template-columns:68px 1fr 170px 30px;gap:14px;align-items:center;padding:11px 16px;cursor:pointer;background:var(--gold-soft);}
+  .ctrl-row:hover{background:#E9D9BC;}
+  .ctrl-id{font-size:13px;color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums;}
+  .ctrl-name{font-size:14.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--ink);}
+  .ctrl-name .docdot{color:var(--gold);font-size:12px;}
+  .ctrl.excluded{background:#F3F1EA;}
+  .ctrl.excluded .ctrl-row{cursor:default;opacity:.5;background:var(--gray-bg);}
+  .ctrl.excluded .ctrl-row:hover{background:var(--gray-bg);}
+  .na-badge{font-size:12px;color:var(--gray);letter-spacing:0.04em;}
+  .info{position:relative;display:inline-flex;}
+  .info .i-btn{width:17px;height:17px;border-radius:50%;border:1px solid var(--line);color:var(--ink-faint);font-size:11px;font-family:Cambria,Georgia,serif;font-style:italic;display:inline-flex;align-items:center;justify-content:center;background:var(--paper);cursor:help;padding:0;line-height:1;}
+  .info .i-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--paper);}
+  .info .tip{display:none;position:absolute;left:0;top:24px;z-index:30;width:320px;max-width:70vw;background:var(--ink);color:#F2EFE8;font-size:12.5px;line-height:1.5;padding:10px 13px;cursor:default;}
+  .info .tip b{color:var(--gold);font-weight:600;font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;display:block;margin-bottom:3px;}
+  .info:hover .tip,.info.show .tip{display:block;}
+  .ctrl select.status{width:100%;padding:6px 8px;font-family:inherit;font-size:12.5px;border:1px solid var(--line);background:var(--paper);color:var(--ink);}
+  .ctrl select.status.s-ok{background:var(--green-bg);color:var(--green);border-color:#C0DD97;}
+  .ctrl select.status.s-part{background:var(--amber-bg);color:var(--amber);border-color:#FAC775;}
+  .ctrl select.status.s-no{background:var(--red-bg);color:var(--red);border-color:#F7C1C1;}
+  .chev{color:var(--ink-faint);font-size:12px;text-align:center;transition:transform .15s;}
+  .ctrl.open .chev{transform:rotate(90deg);}
+  .ctrl-detail{display:none;border-top:1px dashed var(--line);padding:16px;background:#FCFBF8;}
+  .ctrl.open .ctrl-detail{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .field label{display:block;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink);margin-bottom:5px;}
+  .field textarea,.field input[type=text]{width:100%;padding:8px 10px;border:1px solid var(--line);font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--paper);resize:vertical;}
+  .field textarea{min-height:60px;}
+  .field.span2{grid-column:1/-1;}
+  .ctrl-meta{grid-column:1/-1;font-size:11.5px;color:var(--ink-faint);}
+
+  .soa-row{display:grid;grid-template-columns:30px 64px minmax(200px,1fr) minmax(240px,1.4fr);gap:12px;align-items:center;padding:9px 16px;background:var(--paper);border:1px solid var(--line);border-top:none;}
+  .soa-row input[type=checkbox]{width:17px;height:17px;accent-color:var(--gold);cursor:pointer;}
+  .soa-row .ctrl-name{font-size:14px;}
+  .soa-row textarea.motiv{width:100%;min-height:34px;padding:6px 9px;border:1px solid var(--line);font-family:inherit;font-size:12.5px;color:var(--ink);background:var(--paper);resize:vertical;}
+  .soa-row.excluded .ctrl-name{color:var(--ink-faint);}
+  .soa-row.excluded textarea.motiv{background:#FCFBF8;}
+  .soa-row.excluded.missing textarea.motiv{border-color:#E24B4A;}
+  .soa-row .req-hint{grid-column:4;font-size:11px;color:var(--red);display:none;}
+  .soa-row.excluded.missing .req-hint{display:block;margin-top:2px;}
+  .soa-colhead{display:grid;grid-template-columns:30px 64px minmax(200px,1fr) minmax(240px,1.4fr);gap:12px;padding:6px 16px 4px;font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);}
+
+  footer.app{border-top:1px solid var(--line);padding:22px 0 34px;font-size:12px;color:var(--ink-faint);}
+
+  #report{display:none;}
+  @media print{
+    body>header.app,main,footer.app{display:none!important;}
+    body{background:#fff;}
+    #report{display:block;font-size:11.5px;}
+    #report h1{font-size:21px;}
+    #report h2{font-size:14px;margin:16px 0 6px;border-bottom:1.5px solid #1C1B18;padding-bottom:4px;}
+    #report table{width:100%;border-collapse:collapse;}
+    #report td,#report th{border-bottom:0.5pt solid #ccc;padding:4px 6px;text-align:left;vertical-align:top;}
+    #report th{font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;}
+    #report .rp-head{margin-bottom:14px;}
+    #report .rp-head p{font-size:12px;color:#444;}
+  }
+
+  @media (max-width:820px){
+    .ctrl-row{grid-template-columns:54px 1fr 24px;}
+    .ctrl-row .stwrap{grid-column:1/-1;}
+    .ctrl.open .ctrl-detail{grid-template-columns:1fr;}
+    .info .tip{left:auto;right:0;}
+    .soa-row{grid-template-columns:30px 64px 1fr;}
+    .soa-row textarea.motiv{grid-column:1/-1;}
+    .soa-row .req-hint{grid-column:1/-1;}
+    .soa-colhead{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="wrap">
+    <div class="head-row">
+      <div class="brand">
+        <div class="eyebrow">Method</div>
+        <h1>GRC-verktyg</h1>
+        <input type="text" id="clientName" class="client-input" placeholder="Klientnamn / uppdrag" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="head-actions">
+        <select id="fwSelect" title="Ramverk"></select>
+        <button id="btnSoa">Exportera SoA</button>
+        <button id="btnPrint">Rapport</button>
+        <button id="btnExport">Exportera</button>
+        <button id="btnImport">Importera</button>
+        <span id="saveState"></span>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button data-page="overview" class="active">Översikt</button>
+      <button data-page="krav">Grundläggande krav</button>
+      <button data-page="soa">SoA</button>
+      <button data-page="annexa">Annex A</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="page active" id="page-overview">
+  <div class="wrap">
+    <div class="page-head">
+      <div class="eyebrow" id="fwLabel"></div>
+      <h2 style="margin-top:6px">Översikt</h2>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div id="themeArea"></div>
+    <div class="legend">
+      <span><i style="background:var(--green)"></i>Uppfylld</span>
+      <span><i style="background:#EF9F27"></i>Delvis uppfylld</span>
+      <span><i style="background:#E24B4A"></i>Ej uppfylld</span>
+      <span><i style="background:#B4B2A9"></i>Ej tillämplig (SoA)</span>
+      <span><i style="background:var(--gray-bg);border:1px solid var(--line)"></i>Ej bedömd</span>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-krav">
+  <div class="wrap">
+    <div class="page-head">
+      <h2>Grundläggande krav</h2>
+      <p>Obligatoriska krav ur kapitel 4-10, formulerade som det konkreta som ska finnas på plats och kunna visas upp vid revision. Inget av detta kan väljas bort.</p>
+    </div>
+    <div class="toolbar">
+      <input type="search" data-sec="krav" class="searchbox" placeholder="Sök krav, t.ex. SoA eller riskbedömning">
+      <select data-sec="krav" class="statusfilter">
+        <option value="">Alla statusar</option>
+        <option value="ok">Uppfylld</option>
+        <option value="part">Delvis uppfylld</option>
+        <option value="no">Ej uppfylld</option>
+        <option value="todo">Ej bedömd</option>
+      </select>
+      <button class="btn-expand" data-sec="krav">Visa detaljer</button>
+      <button class="btn-collapse" data-sec="krav">Dölj detaljer</button>
+    </div>
+    <div id="groups-krav"></div>
+  </div>
+</div>
+
+<div class="page" id="page-soa">
+  <div class="wrap">
+    <div class="page-head">
+      <h2>Statement of Applicability</h2>
+      <p>Kryssa i de kontroller som är tillämpliga för organisationen. Bortvalda kontroller gråas ur under Annex A och kräver en motivering. Motivering kan även anges för tillämpliga kontroller.</p>
+      <div class="soa-sum" id="soaSum"></div>
+    </div>
+    <div class="toolbar">
+      <input type="search" data-sec="soa" class="searchbox" placeholder="Sök kontroll">
+      <select id="soaFilter">
+        <option value="">Alla kontroller</option>
+        <option value="in">Tillämpliga</option>
+        <option value="out">Bortvalda</option>
+        <option value="miss">Bortvalda utan motivering</option>
+      </select>
+    </div>
+    <div id="groups-soa"></div>
+  </div>
+</div>
+
+<div class="page" id="page-annexa">
+  <div class="wrap">
+    <div class="page-head">
+      <h2>Annex A · Säkerhetsåtgärder</h2>
+      <p>Bedömning av de kontroller som markerats som tillämpliga under fliken SoA. Bortvalda kontroller visas utgråade och kan inte bedömas.</p>
+    </div>
+    <div class="toolbar">
+      <input type="search" data-sec="annexa" class="searchbox" placeholder="Sök kontroll, t.ex. 8.15 eller loggning">
+      <select data-sec="annexa" class="statusfilter">
+        <option value="">Alla statusar</option>
+        <option value="ok">Uppfylld</option>
+        <option value="part">Delvis uppfylld</option>
+        <option value="no">Ej uppfylld</option>
+        <option value="todo">Ej bedömd</option>
+      </select>
+      <label class="toggle"><input type="checkbox" id="hideNa"> Dölj ej tillämpliga</label>
+      <button class="btn-expand" data-sec="annexa">Visa detaljer</button>
+      <button class="btn-collapse" data-sec="annexa">Dölj detaljer</button>
+    </div>
+    <div id="groups-annexa"></div>
+  </div>
+</div>
+</main>
+
+<footer class="app">
+  <div class="wrap">Method IT AB · Verktyget sparar lokalt i webbläsaren på den här datorn. Använd Exportera för säkerhetskopia eller för att flytta arbetet mellan datorer.</div>
+</footer>
+
+<div id="report"></div>
+<input type="file" id="fileInput" accept=".json" style="display:none">
+
+<script>
+const FRAMEWORKS = {
+  iso27001_2022: {
+    name: "ISO/IEC 27001:2022",
+    label: "ISO/IEC 27001:2022",
+    sections: [
+      {
+        id:"krav", soa:false, idPrefix:"", unit:"krav",
+        groups:[
+          { id:"K4", name:"4 Organisationens förutsättningar", controls:[
+            ["4.1","Kontextanalys av interna och externa frågor","Dokumenterad analys av interna och externa frågor som påverkar ledningssystemet, t.ex. i en ISMS-beskrivning. Ska hänga ihop med riskbedömningen."],
+            ["4.2","Intressentanalys med tillämpliga krav","Förteckning över intressenter och deras krav: legala, regulatoriska och avtalsmässiga. Revisorn följer spårbarheten vidare till 5.31 och regelefterlevnadsregistret."],
+            ["4.3","Ledningssystemets omfattning (scope)","Obligatoriskt dokument. Omfattning med gränser, beroenden mot externa parter samt motiverade undantag."],
+            ["4.4","Etablerat och underhållet ISMS","Beskrivning av ledningssystemets processer och hur de samverkar. Visas ofta genom processkarta plus levande styrdokument."]
+          ]},
+          { id:"K5", name:"5 Ledarskap", controls:[
+            ["5.1","Ledningens åtagande och styrning","Visas genom protokoll, resurstilldelning, beslutade mål och ledningens deltagande. Revisorn intervjuar normalt ledningen direkt."],
+            ["5.2","Informationssäkerhetspolicy","Obligatoriskt dokument. Beslutad av ledningen, kommunicerad internt, tillgänglig för relevanta intressenter och periodiskt granskad."],
+            ["5.3","Roller, ansvar och befogenheter","Dokumenterade rolltilldelningar (t.ex. CISO, riskägare, systemägare) och rapporteringsvägar till högsta ledningen."]
+          ]},
+          { id:"K6", name:"6 Planering", controls:[
+            ["6.1","Hantering av risker och möjligheter","Koppling mellan kontextanalysen (4.1, 4.2) och de risker och möjligheter ledningssystemet ska hantera."],
+            ["6.2","Dokumenterad metod för riskbedömning","Obligatoriskt. Metod med riskkriterier och acceptanskriterier som ger jämförbara, repeterbara resultat. Riskägare ska vara utpekade."],
+            ["6.3","Riskbehandlingsplan","Riskbehandlingsplan med åtgärder, ansvariga och tidsättning. Riskägarnas godkännande av planen och av kvarvarande restrisker ska kunna visas."],
+            ["6.4","Statement of Applicability (SoA)","Obligatoriskt dokument enligt 6.1.3 d. Alla Annex A-kontroller med motivering för tillämplighet, motivering för bortval och implementeringsstatus. Byggs här under fliken SoA."],
+            ["6.5","Mätbara informationssäkerhetsmål","Obligatorisk dokumentation. Mätbara mål på relevanta nivåer, kommunicerade, med planer för hur de ska nås och uppföljning av utfall."],
+            ["6.6","Planering av ändringar i ledningssystemet","Bevis på att ändringar i ISMS genomförs planerat, t.ex. ändringslogg eller beslut i ledningsforum."]
+          ]},
+          { id:"K7", name:"7 Stöd", controls:[
+            ["7.1","Resurser för ledningssystemet","Budget, bemanning och verktyg avsatta för ISMS. Visas ofta via verksamhetsplan och intervjuer."],
+            ["7.2","Kompetens och kompetensbevis","Obligatorisk dokumentation. Utbildningsregister, certifikat och CV för nyckelroller, samt åtgärder vid kompetensgap."],
+            ["7.3","Medvetenhet hos personalen","Genomförda utbildningar med närvaro- eller genomförandebevis, kampanjer, gärna mätning som phishing-tester. Personalen ska känna till policyn och sitt bidrag."],
+            ["7.4","Intern och extern kommunikation","Plan för vad som kommuniceras, när, till vem och av vem, både internt och externt."],
+            ["7.5","Styrning av dokumenterad information","Versionshantering, godkännandeflöden, åtkomststyrning och hantering av dokument från externa parter."]
+          ]},
+          { id:"K8", name:"8 Verksamhet", controls:[
+            ["8.1","Verksamhetsstyrning inklusive utkontrakterade processer","Rutiner för att processer genomförs styrt, samt styrning av processer som utförs av externa leverantörer."],
+            ["8.2","Genomförda riskbedömningar med planerade intervall","Obligatoriskt. Dokumenterade resultat från riskbedömningar, genomförda med planerade intervall och vid väsentliga förändringar."],
+            ["8.3","Genomförd riskbehandling","Obligatoriskt. Dokumenterade resultat av riskbehandlingen, dvs. att planen i 6.1.3 faktiskt genomförts och följts upp."]
+          ]},
+          { id:"K9", name:"9 Utvärdering av prestanda", controls:[
+            ["9.1","Mätning, analys och utvärdering","Obligatoriskt. Bestämt vad som mäts, hur, när och av vem, samt dokumenterade resultat. KPI:er kopplade till målen i 6.2."],
+            ["9.2","Internt revisionsprogram och genomförda revisioner","Obligatoriskt. Revisionsprogram, revisionsrapporter och bevis på att revisorerna är objektiva och opartiska. Hela ISMS ska täckas över tid."],
+            ["9.3","Ledningens genomgång","Obligatoriskt. Protokoll som visar att samtliga föreskrivna underlag behandlats (avvikelser, mätresultat, revisionsresultat, risker) och vilka beslut som fattats."]
+          ]},
+          { id:"K10", name:"10 Förbättringar", controls:[
+            ["10.1","Ständig förbättring","Bevis på att ledningssystemet förbättras över tid, t.ex. förbättringslogg, trender och genomförda förbättringsåtgärder."],
+            ["10.2","Avvikelser och korrigerande åtgärder","Obligatoriskt. Avvikelseregister med orsaksanalys, korrigerande åtgärder och kontroll av att åtgärderna haft effekt."]
+          ]}
+        ]
+      },
+      {
+        id:"annexa", soa:true, idPrefix:"A.", unit:"kontroller",
+        groups:[
+          { id:"A5", name:"A.5 Organisatoriska kontroller", controls:[
+            ["5.1","Policyer för informationssäkerhet","Beslutad huvudpolicy och ämnespolicyer, bevis på kommunikation och periodisk översyn."],
+            ["5.2","Roller och ansvar för informationssäkerhet","Rollbeskrivningar, utnämningar, ansvarsmatris (t.ex. RACI)."],
+            ["5.3","Uppdelning av arbetsuppgifter","Identifierade oförenliga roller och hur de separerats, alternativt kompenserande kontroller med motivering."],
+            ["5.4","Ledningens ansvar","Bevis på att ledningen kräver efterlevnad: direktiv, uppföljning i medarbetarsamtal, konsekvenshantering."],
+            ["5.5","Kontakt med myndigheter","Kontaktlista och rutin för när och hur myndigheter kontaktas, t.ex. vid incident (MCF, IMY, polis)."],
+            ["5.6","Kontakt med särskilda intressegrupper","Medlemskap i forum, branschnätverk, prenumerationer på säkerhetsbulletiner."],
+            ["5.7","Hotunderrättelser","Definierade källor, rutin för insamling och analys samt bevis på att underrättelser faktiskt används i riskarbete och skydd."],
+            ["5.8","Informationssäkerhet i projektledning","Projektmodell med säkerhetskrav och kontrollpunkter, exempel från genomförda projekt."],
+            ["5.9","Förteckning över information och andra tillgångar","Aktuellt tillgångsregister med utpekade ägare."],
+            ["5.10","Godtagbar användning av information och tillgångar","Beslutade regler för godtagbar användning, kvitterade av användarna."],
+            ["5.11","Återlämning av tillgångar","Offboarding-rutin med kvittens på återlämnad utrustning och behörigheter."],
+            ["5.12","Klassificering av information","Beslutad klassificeringsmodell och bevis på att den tillämpas i verksamheten."],
+            ["5.13","Märkning av information","Märkningsrutin kopplad till klassningen, exempel i dokument och system."],
+            ["5.14","Informationsöverföring","Regler för överföring av information, avtal vid extern överföring, säkra kanaler."],
+            ["5.15","Styrning av åtkomst","Åtkomstpolicy med regler för tilldelning utifrån verksamhets- och säkerhetskrav."],
+            ["5.16","Identitetshantering","Hantering av identiteters livscykel, unika identiteter, hantering av delade konton."],
+            ["5.17","Autentiseringsinformation","Lösenordskrav, säker distribution av inloggningsuppgifter, rutin vid kompromettering."],
+            ["5.18","Åtkomsträttigheter","Process för beställning och ändring av behörigheter samt genomförda periodiska behörighetsgranskningar."],
+            ["5.19","Informationssäkerhet i leverantörsrelationer","Leverantörspolicy, säkerhetskrav i upphandling, riskbedömning av leverantörer."],
+            ["5.20","Informationssäkerhet i leverantörsavtal","Säkerhetsklausuler i avtal, personuppgiftsbiträdesavtal där det krävs."],
+            ["5.21","Hantering av informationssäkerhet i IKT-leveranskedjan","Krav som förs vidare nedströms i leveranskedjan, granskning av underleverantörer."],
+            ["5.22","Övervakning, granskning och förändringshantering av leverantörstjänster","Genomförd leverantörsuppföljning, SLA-granskning, hantering av förändringar i tjänsten."],
+            ["5.23","Informationssäkerhet vid användning av molntjänster","Molnpolicy, ansvarsfördelning mot leverantören, krav vid anskaffning och exit-strategi."],
+            ["5.24","Planering och förberedelse för incidenthantering","Incidenthanteringsplan med roller, ansvar och kontaktvägar, kommunicerad till berörda."],
+            ["5.25","Bedömning av och beslut om informationssäkerhetshändelser","Kriterier för att klassa händelser som incidenter samt logg över gjorda bedömningar."],
+            ["5.26","Hantering av informationssäkerhetsincidenter","Dokumenterad incidentrutin och ärendelogg som visar att den följs."],
+            ["5.27","Lärdomar från informationssäkerhetsincidenter","Bevis på lessons learned: analyser efter incident och förbättringar som genomförts."],
+            ["5.28","Insamling av bevis","Rutin för forensisk bevissäkring med spårbarhet och bevarandekedja."],
+            ["5.29","Informationssäkerhet vid störningar","Kontinuitetsplaner som inkluderar krav på informationssäkerhet även under störning."],
+            ["5.30","IKT-beredskap för verksamhetskontinuitet","Konsekvensanalys (BIA), IKT-kontinuitetsplaner och resultat från genomförda tester."],
+            ["5.31","Legala, regulatoriska och avtalsmässiga krav","Aktuellt regelefterlevnadsregister, kopplat till intressentanalysen i kapitel 4."],
+            ["5.32","Immateriella rättigheter","Rutin för licensefterlevnad och hantering av upphovsrättsskyddat material."],
+            ["5.33","Skydd av redovisande dokument","Arkiveringsregler, skydd mot förlust och förvanskning, gallringsbeslut."],
+            ["5.34","Integritet och skydd av personuppgifter","GDPR-styrning: register över behandlingar, biträdesavtal, rutiner för registrerades rättigheter."],
+            ["5.35","Oberoende granskning av informationssäkerhet","Genomförda oberoende granskningar med rapporter och åtgärdade observationer."],
+            ["5.36","Efterlevnad av policyer, regler och standarder","Genomförda efterlevnadskontroller och rapportering av resultatet till ansvariga."],
+            ["5.37","Dokumenterade driftrutiner","Aktuella driftrutiner tillgängliga för dem som behöver dem."]
+          ]},
+          { id:"A6", name:"A.6 Personrelaterade kontroller", controls:[
+            ["6.1","Bakgrundskontroll","Rutin för bakgrundskontroll proportionerlig mot rollens känslighet samt bevis på genomförda kontroller."],
+            ["6.2","Anställningsvillkor","Anställningsavtal som anger ansvar för informationssäkerhet."],
+            ["6.3","Medvetenhet, utbildning och träning i informationssäkerhet","Utbildningsplan och genomförandebevis, gärna kompletterat med t.ex. phishing-tester."],
+            ["6.4","Disciplinär process","Dokumenterad och kommunicerad process för hantering av överträdelser."],
+            ["6.5","Ansvar efter anställningens upphörande eller förändring","Avslutsrutin som tydliggör kvarstående ansvar, t.ex. fortsatt sekretess."],
+            ["6.6","Sekretess- eller tystnadsavtal","Signerade sekretessavtal för anställda och konsulter, periodiskt granskade."],
+            ["6.7","Distansarbete","Policy för distansarbete med tekniska och fysiska skyddskrav."],
+            ["6.8","Rapportering av informationssäkerhetshändelser","Känd och lättanvänd rapporteringskanal, bevis på att personalen vet hur den används."]
+          ]},
+          { id:"A7", name:"A.7 Fysiska kontroller", controls:[
+            ["7.1","Fysiska säkerhetsperimetrar","Definierade säkerhetszoner och skalskydd för utrymmen med känslig information."],
+            ["7.2","Fysiskt tillträde","Passersystem, besöksrutin och tillträdesloggar."],
+            ["7.3","Skydd av kontor, rum och faciliteter","Skydd anpassat efter verksamheten, t.ex. placering av känsliga utrymmen utan insyn."],
+            ["7.4","Övervakning av fysisk säkerhet","Larm, kameror eller bevakning samt rutin för granskning av larm och loggar."],
+            ["7.5","Skydd mot fysiska och miljörelaterade hot","Skydd mot brand, vatten och andra miljöhot, t.ex. brandskyddsdokumentation."],
+            ["7.6","Arbete i säkra utrymmen","Särskilda regler för arbete i säkra utrymmen, kända av berörd personal."],
+            ["7.7","Rent skrivbord och ren skärm","Beslutad clear desk/clear screen-regel, gärna med genomförda stickprov."],
+            ["7.8","Placering och skydd av utrustning","Utrustning placerad och skyddad mot obehörig åtkomst och miljöpåverkan."],
+            ["7.9","Säkerhet för tillgångar utanför organisationens lokaler","Regler för utrustning och information utanför lokalerna, t.ex. vid resor."],
+            ["7.10","Lagringsmedia","Rutin för hantering, transport och destruktion av lagringsmedia under hela livscykeln."],
+            ["7.11","Försörjningssystem","UPS, reservkraft eller motsvarande skydd mot avbrott i försörjningssystem."],
+            ["7.12","Kablagesäkerhet","Skyddad kabeldragning för kraft och kommunikation."],
+            ["7.13","Underhåll av utrustning","Underhållsavtal och servicelogg som visar korrekt underhåll."],
+            ["7.14","Säker avveckling eller återanvändning av utrustning","Raderingsintyg eller destruktionsbevis innan utrustning lämnar organisationen."]
+          ]},
+          { id:"A8", name:"A.8 Tekniska kontroller", controls:[
+            ["8.1","Användarnas slutpunktsenheter","Hårdning, kryptering och central hantering (t.ex. MDM) av klienter och mobila enheter."],
+            ["8.2","Privilegierade åtkomsträttigheter","Separata administratörskonton, restriktiv tilldelning och periodisk granskning av privilegier."],
+            ["8.3","Begränsning av informationsåtkomst","Behörighetsstyrning per system enligt need-to-know, kopplad till klassningen."],
+            ["8.4","Åtkomst till källkod","Styrd och loggad åtkomst till kodförråd och utvecklingsverktyg."],
+            ["8.5","Säker autentisering","Multifaktorautentisering och säkra inloggningsflöden, särskilt för exponerade och privilegierade konton."],
+            ["8.6","Kapacitetshantering","Kapacitetsövervakning och prognoser för kritiska resurser."],
+            ["8.7","Skydd mot skadlig kod","Centralt hanterat skydd (t.ex. EDR) i kombination med användarmedvetenhet."],
+            ["8.8","Hantering av tekniska sårbarheter","Sårbarhetsskanning, patchprocess och tidskrav för åtgärd av kritiska sårbarheter."],
+            ["8.9","Konfigurationshantering","Beslutade baselines och kontroll av att konfigurationer inte avviker."],
+            ["8.10","Radering av information","Rutin för radering när information inte längre behövs, kopplad till gallringsbeslut."],
+            ["8.11","Datamaskering","Maskering eller pseudonymisering där det krävs, t.ex. i test och analys."],
+            ["8.12","Förebyggande av dataläckage","DLP-åtgärder eller motsvarande övervakning av känsliga informationsflöden."],
+            ["8.13","Säkerhetskopiering av information","Backuprutin samt dokumenterade återläsningstester med resultat."],
+            ["8.14","Redundans i informationsbehandlingsresurser","Redundant infrastruktur för kritiska system, gärna med failover-tester."],
+            ["8.15","Loggning","Loggningsstandard: vad som loggas, skydd av loggar mot manipulation, lagringstid."],
+            ["8.16","Övervakningsaktiviteter","Övervakning av nät och system (t.ex. SIEM) med rutin för larmhantering."],
+            ["8.17","Klocksynkronisering","Tidssynkronisering mot gemensam källa för korrelering av loggar."],
+            ["8.18","Användning av privilegierade verktygsprogram","Begränsad och loggad användning av verktyg som kan kringgå skyddsåtgärder."],
+            ["8.19","Installation av programvara i driftsystem","Kontrollerad installation, t.ex. vitlistning eller begränsade installationsrättigheter."],
+            ["8.20","Nätverkssäkerhet","Nätverksdesign, brandväggsregler och periodisk granskning av regelverket."],
+            ["8.21","Säkerhet för nätverkstjänster","Säkerhetskrav på nätverkstjänster definierade och avtalade, internt eller mot leverantör."],
+            ["8.22","Segmentering av nätverk","Segmenteringsmodell som separerar miljöer och känsliga system."],
+            ["8.23","Webbfiltrering","Filtrering av åtkomst till skadliga eller otillåtna webbplatser."],
+            ["8.24","Användning av kryptografi","Kryptopolicy med godkända algoritmer och rutin för nyckelhantering."],
+            ["8.25","Säker utvecklingslivscykel","Utvecklingsprocess med definierade säkerhetsaktiviteter genom hela livscykeln."],
+            ["8.26","Säkerhetskrav på applikationer","Säkerhetskrav i kravställning, även vid inköp av färdiga applikationer."],
+            ["8.27","Säker systemarkitektur och konstruktionsprinciper","Beslutade arkitekturprinciper, t.ex. security by design, tillämpade i projekt."],
+            ["8.28","Säker kodning","Kodningsstandard och bevis på kodgranskning."],
+            ["8.29","Säkerhetstestning i utveckling och acceptans","Säkerhetstester och acceptanskriterier, t.ex. penetrationstester före driftsättning."],
+            ["8.30","Utkontrakterad utveckling","Säkerhetskrav på utvecklingsleverantörer och granskning av levererat resultat."],
+            ["8.31","Separation av utvecklings-, test- och driftmiljöer","Separerade miljöer och kontrollerad väg till produktion."],
+            ["8.32","Förändringshantering","Ändringsprocess med riskbedömning, godkännande och spårbarhet."],
+            ["8.33","Testinformation","Skyddad eller avidentifierad testdata, aldrig okontrollerad produktionsdata i test."],
+            ["8.34","Skydd av informationssystem vid revision","Planerade och godkända revisionstester som inte stör produktionen."]
+          ]}
+        ]
+      }
+    ]
+  }
+};
+
+const STATUSES = [
+  ["todo","Ej bedömd"],
+  ["ok","Uppfylld"],
+  ["part","Delvis uppfylld"],
+  ["no","Ej uppfylld"]
+];
+const STATUS_LABEL = Object.fromEntries(STATUSES);
+const STATUS_COLOR = {ok:"var(--green)",part:"#EF9F27",no:"#E24B4A",na:"#B4B2A9"};
+
+const BASE_LS_KEY = "method_grc_v4";
+const CLIENT_NAME_KEY = "method_grc_client_v1";
+let DATA = {};
+let canStore = true;
+try { localStorage.setItem("__t","1"); localStorage.removeItem("__t"); }
+catch(e){ canStore = false; }
+
+function slugify(s){ return (s||"").trim().toLowerCase().replace(/[^a-z0-9åäö]+/g,"-").replace(/^-+|-+$/g,""); }
+function clientNameVal(){ const el = document.getElementById("clientName"); return el ? el.value.trim() : ""; }
+function storageKey(){ const slug = slugify(clientNameVal()); return slug ? BASE_LS_KEY + "__" + slug : BASE_LS_KEY; }
+
+function migrate(old, prefixOldAnnex){
+  const out = {};
+  Object.entries(old).forEach(([fw,ctrls]) => {
+    out[fw] = {};
+    Object.entries(ctrls).forEach(([k,v]) => {
+      let nk = k;
+      if(prefixOldAnnex && !/^[AK]/.test(k)) nk = "A" + k;
+      const st = Object.assign({app:true}, v);
+      if(st.s === "na"){ st.app = false; st.s = "todo"; }
+      if(st.app === undefined) st.app = true;
+      out[fw][nk] = st;
+    });
+  });
+  return out;
+}
+
+function load(){
+  if(!canStore) return;
+  try {
+    DATA = JSON.parse(localStorage.getItem(storageKey())) || null;
+    if(!DATA && storageKey() === BASE_LS_KEY){
+      const v3 = JSON.parse(localStorage.getItem("method_grc_v3"));
+      if(v3){ DATA = migrate(v3, false); }
+      if(!DATA){
+        const v2 = JSON.parse(localStorage.getItem("method_grc_v2"));
+        if(v2){ DATA = migrate(v2, true); }
+      }
+    }
+  } catch(e){ DATA = {}; }
+  if(!DATA) DATA = {};
+}
+let saveTimer = null;
+function save(){
+  if(canStore){
+    try { localStorage.setItem(storageKey(), JSON.stringify(DATA)); flashSaved("Sparat " + new Date().toLocaleTimeString("sv-SE",{hour:"2-digit",minute:"2-digit"}), false); }
+    catch(e){ flashSaved("Kunde inte spara — exportera nu!", true); }
+  } else {
+    flashSaved("Sparas EJ i den här webbläsaren — exportera manuellt", true);
+  }
+}
+function queueSave(){ clearTimeout(saveTimer); saveTimer = setTimeout(save, 400); }
+function flashSaved(msg, warn){
+  const el = document.getElementById("saveState");
+  el.textContent = msg;
+  el.style.color = warn ? "#E24B4A" : "";
+  el.style.fontWeight = warn ? "700" : "";
+}
+function flushSave(){ if(saveTimer){ clearTimeout(saveTimer); saveTimer = null; } save(); }
+window.addEventListener("pagehide", flushSave);
+document.addEventListener("visibilitychange", () => { if(document.visibilityState === "hidden") flushSave(); });
+window.addEventListener("beforeunload", e => {
+  flushSave();
+  if(!canStore){ e.preventDefault(); e.returnValue = ""; }
+});
+
+document.getElementById("clientName").addEventListener("change", () => {
+  flushSave();
+  const name = clientNameVal();
+  if(canStore){ try { localStorage.setItem(CLIENT_NAME_KEY, name); } catch(e){} }
+  load();
+  build();
+});
+
+let currentFw = "iso27001_2022";
+function fwData(){ if(!DATA[currentFw]) DATA[currentFw] = {}; return DATA[currentFw]; }
+function key(sec,id){ return (sec.id === "annexa" ? "A" : "K") + id; }
+function ctrlState(k){ const d = fwData(); if(!d[k]) d[k] = {s:"todo",c:"",doc:"",own:"",m:"",app:true}; if(d[k].app === undefined) d[k].app = true; return d[k]; }
+function esc(s){ const d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+function annexSec(){ return FRAMEWORKS[currentFw].sections.find(s => s.soa); }
+
+function buildSection(sec){
+  const root = document.getElementById("groups-" + sec.id);
+  root.innerHTML = "";
+  sec.groups.forEach(g => {
+    const gel = document.createElement("div");
+    gel.className = "group";
+    gel.innerHTML = '<div class="ghead"><h3>' + esc(g.name) + '</h3><span class="gcount">' + g.controls.length + ' ' + sec.unit + '</span></div>';
+    g.controls.forEach(([id,name,ev]) => {
+      const k = key(sec,id);
+      const st = ctrlState(k);
+      const c = document.createElement("div");
+      c.className = "ctrl" + (sec.soa && !st.app ? " excluded" : "");
+      c.dataset.key = k;
+      c.dataset.sec = sec.id;
+      c.dataset.search = (sec.idPrefix + id + " " + name + " " + (ev||"")).toLowerCase();
+      const infoBtn = ev
+        ? '<span class="info"><button type="button" class="i-btn" aria-label="Bevisbörda">i</button><span class="tip"><b>Bevisbörda</b>' + esc(ev) + '</span></span>'
+        : "";
+      if(sec.soa && !st.app){
+        c.innerHTML =
+          '<div class="ctrl-row">' +
+            '<span class="ctrl-id">' + sec.idPrefix + id + '</span>' +
+            '<span class="ctrl-name"><span>' + esc(name) + '</span></span>' +
+            '<span class="stwrap"><span class="na-badge">Ej tillämplig enligt SoA</span></span>' +
+            '<span></span>' +
+          '</div>';
+        gel.appendChild(c);
+        return;
+      }
+      const statusOpts = STATUSES.map(([v,l]) => '<option value="' + v + '"' + (st.s === v ? " selected" : "") + '>' + l + '</option>').join("");
+      c.innerHTML =
+        '<div class="ctrl-row">' +
+          '<span class="ctrl-id">' + sec.idPrefix + id + '</span>' +
+          '<span class="ctrl-name"><span>' + esc(name) + '</span>' + infoBtn + (st.doc ? '<span class="docdot" title="Dokumentreferens finns">&#9679; dok</span>' : "") + '</span>' +
+          '<span class="stwrap"><select class="status s-' + st.s + '">' + statusOpts + '</select></span>' +
+          '<span class="chev">&#9656;</span>' +
+        '</div>' +
+        '<div class="ctrl-detail">' +
+          '<div class="field span2"><label>Kommentar / observation</label><textarea data-f="c">' + esc(st.c) + '</textarea></div>' +
+          '<div class="field"><label>Dokumentreferens / evidens</label><textarea data-f="doc" placeholder="Dokument, system eller annat underlag som styrker statusen">' + esc(st.doc) + '</textarea></div>' +
+          '<div class="field"><label>Ansvarig</label><input type="text" data-f="own" value="' + esc(st.own) + '"></div>' +
+          '<div class="ctrl-meta">' + (st.t ? "Senast uppdaterad " + st.t : "") + '</div>' +
+        '</div>';
+      gel.appendChild(c);
+    });
+    root.appendChild(gel);
+  });
+  bindSectionEvents(sec.id);
+  if(sec.id === "annexa") applyHideNa();
+}
+
+function buildSoa(){
+  const sec = annexSec();
+  const root = document.getElementById("groups-soa");
+  root.innerHTML = "";
+  sec.groups.forEach(g => {
+    const gel = document.createElement("div");
+    gel.className = "group";
+    gel.innerHTML = '<div class="ghead"><h3>' + esc(g.name) + '</h3><span class="gcount">' + g.controls.length + ' kontroller</span></div>' +
+      '<div class="soa-colhead"><span></span><span>Ref</span><span>Kontroll</span><span>Motivering</span></div>';
+    g.controls.forEach(([id,name]) => {
+      const k = key(sec,id);
+      const st = ctrlState(k);
+      const row = document.createElement("div");
+      row.className = "soa-row" + (!st.app ? " excluded" : "") + (!st.app && !st.m.trim() ? " missing" : "");
+      row.dataset.key = k;
+      row.dataset.search = (sec.idPrefix + id + " " + name).toLowerCase();
+      row.innerHTML =
+        '<input type="checkbox" ' + (st.app ? "checked" : "") + ' aria-label="Tillämplig">' +
+        '<span class="ctrl-id">' + sec.idPrefix + id + '</span>' +
+        '<span class="ctrl-name">' + esc(name) + '</span>' +
+        '<textarea class="motiv" placeholder="' + (st.app ? "Motivering till att kontrollen är tillämplig (valfritt)" : "Motivering till bortval (krävs)") + '">' + esc(st.m) + '</textarea>' +
+        '<span class="req-hint">Motivering krävs för bortvalda kontroller</span>';
+      const cb = row.querySelector("input[type=checkbox]");
+      const ta = row.querySelector("textarea.motiv");
+      cb.addEventListener("change", () => {
+        st.app = cb.checked;
+        st.t = new Date().toLocaleDateString("sv-SE");
+        row.classList.toggle("excluded", !st.app);
+        row.classList.toggle("missing", !st.app && !st.m.trim());
+        ta.placeholder = st.app ? "Motivering till att kontrollen är tillämplig (valfritt)" : "Motivering till bortval (krävs)";
+        queueSave();
+        buildSection(annexSec());
+        renderDash();
+        renderSoaSum();
+      });
+      ta.addEventListener("input", () => {
+        st.m = ta.value;
+        st.t = new Date().toLocaleDateString("sv-SE");
+        row.classList.toggle("missing", !st.app && !st.m.trim());
+        queueSave();
+        renderSoaSum();
+      });
+      gel.appendChild(row);
+    });
+    root.appendChild(gel);
+  });
+  renderSoaSum();
+}
+
+function renderSoaSum(){
+  const sec = annexSec();
+  const all = sec.groups.flatMap(g => g.controls);
+  let inc = 0, exc = 0, miss = 0;
+  all.forEach(([id]) => {
+    const st = ctrlState(key(sec,id));
+    if(st.app) inc++;
+    else { exc++; if(!st.m.trim()) miss++; }
+  });
+  document.getElementById("soaSum").innerHTML =
+    '<b>' + inc + '</b> av ' + all.length + ' kontroller tillämpliga · ' + exc + ' bortvalda' +
+    (miss ? ' · <span style="color:var(--red)">' + miss + ' bortvalda saknar motivering</span>' : '');
+}
+
+function build(){
+  const fw = FRAMEWORKS[currentFw];
+  const client = clientNameVal();
+  document.getElementById("fwLabel").textContent = fw.label + (client ? " · " + client : "");
+  fw.sections.forEach(buildSection);
+  buildSoa();
+  renderDash();
+}
+
+function bindSectionEvents(secId){
+  document.querySelectorAll('.ctrl[data-sec="' + secId + '"]').forEach(c => {
+    if(c.classList.contains("excluded")) return;
+    const k = c.dataset.key;
+    c.querySelector(".ctrl-row").addEventListener("click", e => {
+      if(e.target.closest("select") || e.target.closest(".info")) return;
+      c.classList.toggle("open");
+    });
+    const ib = c.querySelector(".i-btn");
+    if(ib){
+      ib.addEventListener("click", e => {
+        e.stopPropagation();
+        const inf = ib.parentElement;
+        document.querySelectorAll(".info.show").forEach(x => { if(x !== inf) x.classList.remove("show"); });
+        inf.classList.toggle("show");
+      });
+    }
+    const sel = c.querySelector("select.status");
+    sel.addEventListener("change", () => {
+      const st = ctrlState(k);
+      st.s = sel.value;
+      st.t = new Date().toLocaleDateString("sv-SE");
+      sel.className = "status s-" + sel.value;
+      c.querySelector(".ctrl-meta").textContent = "Senast uppdaterad " + st.t;
+      queueSave();
+      renderDash();
+    });
+    c.querySelectorAll("[data-f]").forEach(inp => {
+      inp.addEventListener("input", () => {
+        const st = ctrlState(k);
+        st[inp.dataset.f] = inp.value;
+        st.t = new Date().toLocaleDateString("sv-SE");
+        if(inp.dataset.f === "doc"){
+          const nameEl = c.querySelector(".ctrl-name");
+          const dot = nameEl.querySelector(".docdot");
+          if(inp.value && !dot) nameEl.insertAdjacentHTML("beforeend",'<span class="docdot" title="Dokumentreferens finns">&#9679; dok</span>');
+          if(!inp.value && dot) dot.remove();
+        }
+        queueSave();
+      });
+    });
+  });
+}
+document.addEventListener("click", e => {
+  if(!e.target.closest(".info")) document.querySelectorAll(".info.show").forEach(x => x.classList.remove("show"));
+});
+
+function counts(sec, list){
+  const n = {ok:0,part:0,no:0,na:0,todo:0};
+  list.forEach(([id]) => {
+    const st = ctrlState(key(sec,id));
+    if(sec.soa && !st.app) n.na++;
+    else n[st.s]++;
+  });
+  return n;
+}
+function sumCounts(a,b){ const r = {}; ["ok","part","no","na","todo"].forEach(s => r[s] = a[s] + b[s]); return r; }
+function pctOf(n, total){ const app = total - n.na; return app ? Math.round(100 * n.ok / app) : 0; }
+
+function renderDash(){
+  const fw = FRAMEWORKS[currentFw];
+  const secStats = fw.sections.map(sec => {
+    const all = sec.groups.flatMap(g => g.controls);
+    return { sec, n: counts(sec, all), total: all.length };
+  });
+  const totN = secStats.reduce((acc,s) => sumCounts(acc, s.n), {ok:0,part:0,no:0,na:0,todo:0});
+  const totLen = secStats.reduce((acc,s) => acc + s.total, 0);
+  const kpis = document.getElementById("kpis");
+  let html = '<div class="kpi big"><div class="num">' + pctOf(totN, totLen) + '%</div><div class="lbl">Uppfyllnad totalt</div></div>';
+  secStats.forEach(s => {
+    html += '<div class="kpi"><div class="num">' + pctOf(s.n, s.total) + '%</div><div class="lbl">' + (s.sec.id === "annexa" ? "Annex A" : "Grundläggande krav") + '</div></div>';
+  });
+  html +=
+    '<div class="kpi"><div class="num" style="color:var(--green)">' + totN.ok + '</div><div class="lbl">Uppfyllda</div></div>' +
+    '<div class="kpi"><div class="num" style="color:var(--amber)">' + totN.part + '</div><div class="lbl">Delvis</div></div>' +
+    '<div class="kpi"><div class="num" style="color:var(--red)">' + totN.no + '</div><div class="lbl">Ej uppfyllda</div></div>' +
+    '<div class="kpi"><div class="num" style="color:var(--gray)">' + totN.na + '</div><div class="lbl">Ej tillämpliga</div></div>' +
+    '<div class="kpi"><div class="num">' + totN.todo + '</div><div class="lbl">Ej bedömda</div></div>';
+  kpis.innerHTML = html;
+
+  const area = document.getElementById("themeArea");
+  area.innerHTML = "";
+  fw.sections.forEach(sec => {
+    const lbl = document.createElement("div");
+    lbl.className = "part-label";
+    lbl.textContent = sec.id === "annexa" ? "Annex A · Säkerhetsåtgärder" : "Grundläggande krav (kapitel 4-10)";
+    area.appendChild(lbl);
+    const wrap = document.createElement("div");
+    wrap.className = "themes";
+    sec.groups.forEach(g => {
+      const gn = counts(sec, g.controls);
+      const tot = g.controls.length;
+      const gApp = tot - gn.na;
+      const seg = (val,color) => val ? '<span style="width:' + (100*val/tot) + '%;background:' + color + '"></span>' : "";
+      const el = document.createElement("div");
+      el.className = "theme-bar";
+      el.innerHTML =
+        '<div class="tb-head"><span class="tb-name">' + esc(g.name) + '</span>' +
+        '<span class="tb-pct">' + gn.ok + ' av ' + gApp + ' uppfyllda · ' + pctOf(gn, tot) + '%</span></div>' +
+        '<div class="bar">' + seg(gn.ok,STATUS_COLOR.ok) + seg(gn.part,STATUS_COLOR.part) + seg(gn.no,STATUS_COLOR.no) + seg(gn.na,STATUS_COLOR.na) + '</div>';
+      wrap.appendChild(el);
+    });
+    area.appendChild(wrap);
+  });
+}
+
+document.querySelectorAll("nav.tabs button").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("nav.tabs button").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    document.getElementById("page-" + b.dataset.page).classList.add("active");
+  });
+});
+
+function applyFilter(secId){
+  const q = document.querySelector('.searchbox[data-sec="' + secId + '"]').value.toLowerCase().trim();
+  const fEl = document.querySelector('.statusfilter[data-sec="' + secId + '"]');
+  const f = fEl ? fEl.value : "";
+  document.querySelectorAll('.ctrl[data-sec="' + secId + '"]').forEach(c => {
+    const st = ctrlState(c.dataset.key);
+    const matchQ = !q || c.dataset.search.includes(q) || (st.c||"").toLowerCase().includes(q) || (st.doc||"").toLowerCase().includes(q) || (st.m||"").toLowerCase().includes(q);
+    const isExcluded = c.classList.contains("excluded");
+    const matchF = !f || (!isExcluded && st.s === f);
+    const hideNa = secId === "annexa" && isExcluded && document.getElementById("hideNa").checked;
+    c.style.display = (matchQ && matchF && !hideNa) ? "" : "none";
+  });
+  document.querySelectorAll("#groups-" + secId + " .group").forEach(g => {
+    const any = [...g.querySelectorAll(".ctrl")].some(c => c.style.display !== "none");
+    g.style.display = any ? "" : "none";
+  });
+}
+function applyHideNa(){ if(document.querySelector('.searchbox[data-sec="annexa"]')) applyFilter("annexa"); }
+
+function applySoaFilter(){
+  const q = document.querySelector('.searchbox[data-sec="soa"]').value.toLowerCase().trim();
+  const f = document.getElementById("soaFilter").value;
+  document.querySelectorAll(".soa-row").forEach(r => {
+    const st = ctrlState(r.dataset.key);
+    const matchQ = !q || r.dataset.search.includes(q) || (st.m||"").toLowerCase().includes(q);
+    let matchF = true;
+    if(f === "in") matchF = st.app;
+    if(f === "out") matchF = !st.app;
+    if(f === "miss") matchF = !st.app && !st.m.trim();
+    r.style.display = (matchQ && matchF) ? "" : "none";
+  });
+  document.querySelectorAll("#groups-soa .group").forEach(g => {
+    const any = [...g.querySelectorAll(".soa-row")].some(r => r.style.display !== "none");
+    g.style.display = any ? "" : "none";
+  });
+}
+
+document.querySelectorAll(".searchbox").forEach(i => i.addEventListener("input", () => i.dataset.sec === "soa" ? applySoaFilter() : applyFilter(i.dataset.sec)));
+document.querySelectorAll(".statusfilter").forEach(i => i.addEventListener("change", () => applyFilter(i.dataset.sec)));
+document.getElementById("soaFilter").addEventListener("change", applySoaFilter);
+document.getElementById("hideNa").addEventListener("change", () => applyFilter("annexa"));
+document.querySelectorAll(".btn-expand").forEach(b => b.addEventListener("click", () => document.querySelectorAll('.ctrl[data-sec="' + b.dataset.sec + '"]:not(.excluded)').forEach(c => c.classList.add("open"))));
+document.querySelectorAll(".btn-collapse").forEach(b => b.addEventListener("click", () => document.querySelectorAll('.ctrl[data-sec="' + b.dataset.sec + '"]').forEach(c => c.classList.remove("open"))));
+
+document.getElementById("btnExport").addEventListener("click", () => {
+  const client = clientNameVal();
+  const blob = new Blob([JSON.stringify({version:4, client:client, exported:new Date().toISOString(), data:DATA}, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  const slug = slugify(client);
+  a.download = "method-grc-" + (slug ? slug + "-" : "") + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+document.getElementById("btnImport").addEventListener("click", () => document.getElementById("fileInput").click());
+document.getElementById("fileInput").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const obj = JSON.parse(r.result);
+      if(obj.client){
+        document.getElementById("clientName").value = obj.client;
+        if(canStore){ try { localStorage.setItem(CLIENT_NAME_KEY, obj.client); } catch(e2){} }
+      }
+      DATA = migrate(obj.data || obj, false);
+      save();
+      build();
+      flashSaved("Importerat", false);
+    } catch(err){ alert("Kunde inte läsa filen. Kontrollera att det är en exportfil från det här verktyget."); }
+  };
+  r.readAsText(file);
+  e.target.value = "";
+});
+
+function printReport(){
+  const fw = FRAMEWORKS[currentFw];
+  const secStats = fw.sections.map(sec => {
+    const all = sec.groups.flatMap(g => g.controls);
+    return { sec, n: counts(sec, all), total: all.length };
+  });
+  const totN = secStats.reduce((acc,s) => sumCounts(acc, s.n), {ok:0,part:0,no:0,na:0,todo:0});
+  const totLen = secStats.reduce((acc,s) => acc + s.total, 0);
+  const client = clientNameVal();
+  let html = '<div class="rp-head"><h1>GAP-analys · ' + esc(fw.name) + (client ? ' · ' + esc(client) : '') + '</h1>' +
+    '<p>Method IT AB · ' + new Date().toLocaleDateString("sv-SE") + ' · Uppfyllnad totalt: ' + pctOf(totN, totLen) + '% (' +
+    totN.ok + ' uppfyllda, ' + totN.part + ' delvis, ' + totN.no + ' ej uppfyllda, ' + totN.na + ' ej tillämpliga enligt SoA, ' + totN.todo + ' ej bedömda)</p></div>';
+  fw.sections.forEach(sec => {
+    sec.groups.forEach(g => {
+      html += '<h2>' + esc(g.name) + '</h2>';
+      html += '<table><tr><th style="width:48px">Ref</th><th style="width:23%">Namn</th><th style="width:95px">Status</th><th>Kommentar</th><th style="width:20%">Dokumentreferens</th><th style="width:85px">Ansvarig</th></tr>';
+      g.controls.forEach(([id,name]) => {
+        const st = ctrlState(key(sec,id));
+        const statusTxt = (sec.soa && !st.app) ? "Ej tillämplig" : STATUS_LABEL[st.s];
+        html += '<tr><td>' + sec.idPrefix + id + '</td><td>' + esc(name) + '</td><td>' + statusTxt + '</td><td>' + esc(st.c) + '</td><td>' + esc(st.doc) + '</td><td>' + esc(st.own) + '</td></tr>';
+      });
+      html += '</table>';
+    });
+  });
+  document.getElementById("report").innerHTML = html;
+  window.print();
+}
+
+function printSoa(){
+  const sec = annexSec();
+  const fw = FRAMEWORKS[currentFw];
+  const all = sec.groups.flatMap(g => g.controls);
+  const n = counts(sec, all);
+  const client = clientNameVal();
+  let html = '<div class="rp-head"><h1>Statement of Applicability · ' + esc(fw.name) + (client ? ' · ' + esc(client) : '') + '</h1>' +
+    '<p>Method IT AB · ' + new Date().toLocaleDateString("sv-SE") + ' · ' + (all.length - n.na) + ' av ' + all.length + ' kontroller tillämpliga · Status: ' +
+    n.ok + ' uppfyllda, ' + n.part + ' delvis, ' + n.no + ' ej uppfyllda, ' + n.todo + ' ej bedömda</p></div>';
+  sec.groups.forEach(g => {
+    html += '<h2>' + esc(g.name) + '</h2>';
+    html += '<table><tr><th style="width:48px">Ref</th><th style="width:22%">Kontroll</th><th style="width:60px">Tillämplig</th><th>Motivering</th><th style="width:85px">Status</th><th style="width:20%">Implementering / referens</th></tr>';
+    g.controls.forEach(([id,name]) => {
+      const st = ctrlState(key(sec,id));
+      html += '<tr><td>' + sec.idPrefix + id + '</td><td>' + esc(name) + '</td><td>' + (st.app ? "Ja" : "Nej") + '</td><td>' + esc(st.m) + '</td><td>' + (st.app ? STATUS_LABEL[st.s] : "") + '</td><td>' + esc(st.doc) + '</td></tr>';
+    });
+    html += '</table>';
+  });
+  document.getElementById("report").innerHTML = html;
+  window.print();
+}
+
+document.getElementById("btnPrint").addEventListener("click", printReport);
+document.getElementById("btnSoa").addEventListener("click", printSoa);
+
+const fwSel = document.getElementById("fwSelect");
+Object.entries(FRAMEWORKS).forEach(([k,v]) => {
+  const o = document.createElement("option");
+  o.value = k; o.textContent = v.name;
+  fwSel.appendChild(o);
+});
+fwSel.addEventListener("change", () => { currentFw = fwSel.value; build(); });
+
+if(canStore){
+  try {
+    const savedClient = localStorage.getItem(CLIENT_NAME_KEY);
+    if(savedClient) document.getElementById("clientName").value = savedClient;
+  } catch(e){}
+}
+load();
+build();
+if(!canStore) flashSaved("Sparas EJ i den här webbläsaren — exportera manuellt", true);
+</script>
+</body>
+</html>

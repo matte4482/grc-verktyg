@@ -8,7 +8,9 @@ Method IT:s verktyg för gap-analys och riskarbete enligt ISO/IEC 27001:2022. Ko
 
 Verktyget är en fristående webbapp utan server. Varje kunduppdrag sparas som en projektfil i kundens egen mapp, och ingenting lagras hos Method IT.
 
-> **Designbeslut** och skälen bakom dem finns i [ARCHITECTURE.md](ARCHITECTURE.md). Läs den först när du tar upp arbetet på en ny dator.
+Det är ett nytt verktyg, byggt från grunden. Det gamla enfilsverktyget (`legacy/method-grc-verktyg.html`) är förebild för innehåll och arbetssätt, men dess sparfiler går inte att öppna i det nya (ARCHITECTURE B-16).
+
+> **Designbeslut** och skälen bakom dem finns i [ARCHITECTURE.md](ARCHITECTURE.md). Läs den först när du tar upp arbetet på en ny dator. Planen med faser och milstolpar finns i [docs/plan-2.0.md](docs/plan-2.0.md).
 
 **Innehåll**
 
@@ -33,8 +35,11 @@ npm run dev          # startar utvecklingsservern på http://localhost:5173
 npm test             # kör alla tester en gång
 npm run test:watch   # kör om testerna vid varje ändring
 npm run check        # typkontroll (Svelte + TypeScript)
-npm run build        # bygger verktyget till dist/
+npm run build        # bygger verktyget till en enda fil: dist/index.html
+npm run preview      # visar det byggda verktyget i webbläsaren
 ```
+
+`npm run build` gör två saker: Vite bygger och bäddar in allt i `dist/index.html`, och sedan kontrollerar `scripts/finalize-build.mjs` att filen är fristående och lägger in en säkerhetspolicy (ARCHITECTURE B-03 och B-20). Det är `dist/index.html` som delas ut till konsulterna. Den går att öppna direkt från disk, utan server och utan nät.
 
 ## 2. Projektstruktur
 
@@ -44,24 +49,32 @@ Filer markerade med ✅ finns redan. Resten är målbilden som byggs upp fas fö
 grc-tool/
 ├── ARCHITECTURE.md                   ✅ designbeslut
 ├── README.md                         ✅ den här filen
+├── index.html                        ✅ HTML-mallen som Vite bygger från
 ├── package.json / package-lock.json  ✅
-├── vite.config.ts                    ✅ Svelte + YAML-import
+├── vite.config.ts                    ✅ Svelte, YAML-import, bygge till en fil
+├── docs/plan-2.0.md                  ✅ faser, milstolpar och beslut som behövs
+├── legacy/method-grc-verktyg.html    ✅ det gamla verktyget, bara som referens
 ├── scripts/
-│   └── extract-framework.mjs         ✅ engångsskript: gamla HTML-verktyget → YAML
-├── tests/fixtures/                   avidentifierade projektfiler för tester
+│   ├── extract-framework.mjs         ✅ engångsskript: gamla HTML-verktyget → YAML
+│   └── finalize-build.mjs            ✅ kontroll av bygget + CSP (körs av npm run build)
+├── tests/fixtures/                   ✅ påhittade projektfiler för tester
 └── src/
-    ├── main.ts / App.svelte          ✅ startpunkt
-    ├── yaml.d.ts                     ✅ typning av *.yaml-importer
+    ├── main.ts / App.svelte          ✅ startpunkt (i fas 0 ett enkelt skal)
+    ├── app.css                       ✅ grundstil, färger från det gamla verktyget
+    ├── yaml.d.ts / globals.d.ts      ✅ typning av *.yaml-importer och byggkonstanter
     ├── lib/
     │   ├── frameworks/               ✅ ramverk som data
     │   │   ├── schema.ts             ✅ zod-schema för alla ramverk
     │   │   ├── iso27001-2022.yaml    ✅ 26 grundkrav + 93 Annex A-kontroller
     │   │   ├── iso27001.test.ts      ✅
-    │   │   └── index.ts              register över tillgängliga ramverk
-    │   ├── project/                  projektfilen (.grc.json)
-    │   │   ├── schema.ts             zod-schema för projektfilen
-    │   │   ├── store.svelte.ts       app-state med Svelte-runes
-    │   │   └── legacy.ts             import av gamla exportfiler (v2–v4)
+    │   │   ├── index.ts              ✅ register över tillgängliga och kommande ramverk
+    │   │   └── index.test.ts         ✅
+    │   ├── project/                  ✅ projektfilen (.grc.json)
+    │   │   ├── schema.ts             ✅ zod-schema för projektfilen
+    │   │   ├── project.ts            ✅ skapa, läsa in, skriva ut, kontrollera mot ramverk
+    │   │   ├── project.test.ts       ✅
+    │   │   └── store.svelte.ts       app-state med Svelte-runes
+    │   ├── zod-setup.ts              ✅ zod utan kodgenerering (krävs av CSP)
     │   ├── risk/                     riskmetod, riskvärden, nivåer, restrisk
     │   ├── storage/                  öppna, spara och autospara fil
     │   └── report/                   rapport och SoA för utskrift
@@ -117,7 +130,7 @@ Funktionerna nedan är det verktyget ska kunna. Skisserna finns hos Mateusz (sk�
     - *Tomt register.*
     - *Kopiera från kund:* återanvänder riskmetod och struktur från ett tidigare uppdrag, men inte bedömningarna.
   - **Sparplats:** efter valen väljer användaren var projektfilen ska sparas.
-- **Öppna befintligt arbete:** dra in en `.grc.json`, eller välj fil. Gamla exportfiler från det tidigare verktyget känns igen och översätts (ARCHITECTURE B-11).
+- **Öppna befintligt arbete:** dra in en `.grc.json`, eller välj fil. Exportfiler från det gamla verktyget känns igen och avvisas med ett tydligt meddelande (ARCHITECTURE B-16).
 - **Senaste arbeten:** kund, ramverk, senast ändrad och uppfyllnadsgrad, med knappen "Fortsätt".
 - **Informationsrad:** "Bedömningen sparas som en fil i kundens mapp. Inget lagras hos Method IT."
 
@@ -231,7 +244,8 @@ Grundkrav och Annex A använder samma vy, med en växlare mellan dem.
   - **Motivering och observation:** fritext. Knappen "Föreslå text från risker" hämtar text från kopplade risker.
   - **Ansvarig** och **kopplade risker** (med riskvärde).
   - **Bevisbörda:** texten `guidance` från ramverket, skrivskyddad.
-  - **Bifogad evidens:** dra in filer eller klicka för att bifoga. Filerna sparas i kundens mapp bredvid projektfilen. Projektfilen innehåller bara sökväg, storlek, vem som lade till filen och när.
+  - **Bifogad evidens:** dra in filer eller klicka för att bifoga. Filerna sparas i en evidensmapp bredvid projektfilen i kundens mapp. Projektfilen innehåller bara sökväg, storlek, kontrollsumma, källa (manuell eller automatisk), vem som lade till filen och när. Saknas filen, eller har den ändrats, visas en varning.
+  - **Teknisk och organisatorisk del (valfritt):** statusen kan delas upp i två delar som underlag. Den övergripande statusen sätts alltid av konsulten (ARCHITECTURE B-18).
   - **Sidfot:** "Senast uppdaterad … av …".
 - **Åtgärd skapas automatiskt** när status sätts till Delvis eller Ej uppfylld. Den föreslås i åtgärdsplanen och länkas med "Visa".
 - **Bortvalda kontroller** i Annex A visas utgråade och kan inte bedömas.
@@ -248,7 +262,7 @@ Grundkrav och Annex A använder samma vy, med en växlare mellan dem.
 
 ### 4.9 Åtgärdsplan
 
-- **Åtgärder** skapas automatiskt från kontroller som är Delvis eller Ej uppfyllda, och från risker med behandlingen *Reducera*. De kan också skapas för hand.
+- **Åtgärder** skapas automatiskt från kontroller som är Delvis eller Ej uppfyllda, och från risker över acceptansnivån. De kan också skapas för hand.
 - **Fält per åtgärd:**
   - beskrivning och ansvarig
   - deadline
@@ -270,69 +284,64 @@ Grundkrav och Annex A använder samma vy, med en växlare mellan dem.
 
 ### 4.11 Spara och öppna
 
-- **Autosparning** till projektfilen en kort stund efter varje ändring, och direkt när fliken döljs eller stängs.
-- **"Spara" och "Spara som"** kan väljas manuellt.
+- **"Spara" och "Spara som"** skriver direkt till en fil i kundens SharePoint-mapp (Chrome och Edge). I Safari och Firefox laddas filen ned i stället (ARCHITECTURE Ö-01).
+- **Autosparning** var tionde minut, men bara när något har ändrats.
+- **Sparstatus** visas tydligt: sparat till fil, osparade ändringar, eller bara sparat i webbläsaren.
 - **Osparade ändringar** ger en varning vid stängning.
 - **Ogiltig projektfil** ger ett tydligt fel om vad som är fel. Filen skrivs aldrig över.
-- Hur sparningen sker tekniskt är en öppen fråga (ARCHITECTURE Ö-01).
 
 ## 5. Projektfilens format
 
-Formatet är ett utkast. Det slutliga schemat definieras i `src/lib/project/schema.ts` (ARCHITECTURE B-10).
+Schemat finns i [`src/lib/project/schema.ts`](src/lib/project/schema.ts), och en komplett påhittad exempelfil finns i [`tests/fixtures/exempel.grc.json`](tests/fixtures/exempel.grc.json). Skälen bakom formatet står i ARCHITECTURE B-17.
 
 ```jsonc
 {
   "schemaVersion": 1,
   "tool": "method-grc",
-  "client": { "name": "Nordvik Logistik AB" },
+  "id": "0f8c2b7e-…",                  // unikt för bedömningen
+  "previousId": "…",                   // valfritt: bedömningen den utgår från (fas 7)
+  "client": { "name": "Exempelbolaget AB" },
   "framework": { "id": "iso27001", "version": "2022" },
   "createdAt": "2026-09-02T09:00:00Z",
   "updatedAt": "2026-09-22T14:42:00Z",
 
-  "riskMethod": {
-    "consequence": { "types": ["Verksamhet och ekonomi", "Information och anseende"],
-                     "levels": [{ "level": 1, "name": "Försumbar", "descriptions": ["…", "…"] }] },
-    "likelihood":  { "levels": [{ "level": 1, "name": "Mycket osannolik", "frequency": "…", "interpretation": "…" }] },
-    "acceptanceThreshold": 6,
-    "reviewIntervalMonths": 12,
-    "approvedBy": "Eva Lindqvist, vd",
-    "approvedAt": "2026-09-22"
-  },
+  "riskMethod": { … },                 // skalor, acceptansnivå, intervall, fastställd av
 
   "risks": [{
-    "id": "R-004",
+    "id": "R-001",
     "title": "Obehörig åtkomst via öppen fjärrskrivbordsport",
-    "description": "…", "threat": "…", "vulnerability": "…", "assets": ["…"],
-    "owner": "Johan Ek, IT-chef",
+    "owner": "Bertil Berg, IT-chef",
     "before":  { "consequence": 4, "likelihood": 4 },
     "planned": { "consequence": 4, "likelihood": 1 },
     "treatment": "reduce",
-    "treatmentPlan": "…",
-    "controls": ["A.8.20", "A.8.5", "A.5.15"],
-    "identifiedAt": "2026-09-02", "lastAssessedAt": "2026-09-22",
+    "controls": [{ "control": "A.8.20", "effect": "high", "type": "preventive" }],
+    "evidence": [],
+    "identifiedAt": "2026-09-02",
     "approval": null,
-    "history": [{ "at": "2026-09-09", "by": "Mateusz W.", "text": "A.5.15 kopplad" }]
+    "history": [{ "at": "2026-09-09T10:00:00Z", "by": "Konsult K.", "text": "A.5.15 kopplad" }]
   }],
 
   "controls": {
     "A.8.20": {
       "status": "partial",
-      "comment": "…",
-      "owner": "Johan Ek, IT-chef",
-      "applicable": true,
-      "soaJustification": "",
-      "evidence": [{ "file": "evidens/Natverkspolicy_v2.1.pdf", "size": 348160,
-                     "addedBy": "Sara Holm", "addedAt": "2026-09-18" }],
-      "updatedAt": "2026-09-22", "updatedBy": "Mateusz W."
+      "parts": { "technical": "not_fulfilled", "organizational": "fulfilled" },
+      "comment": "…", "owner": "…", "evidenceNote": "",
+      "applicable": true, "soaJustification": "",
+      "evidence": [{ "id": "EV-001", "file": "evidens/Natverkspolicy_v2.1.pdf", "size": 348160,
+                     "sha256": "…", "source": "manual",
+                     "addedBy": "Cecilia Carlsson", "addedAt": "2026-09-18T11:20:00Z" }],
+      "updated": { "at": "2026-09-22T14:40:00Z", "by": "Konsult K." }
     }
   },
 
   "actions": [{
-    "id": "ATG-001",
-    "title": "Stäng port 3389 i två nätverksregler och inför Azure Bastion",
-    "owner": "Johan Ek", "due": "2026-10-15", "status": "in_progress",
-    "source": { "type": "control", "id": "A.8.20" }
-  }]
+    "id": "ATG-001", "title": "Stäng port 3389 och inför säker fjärråtkomst",
+    "owner": "Bertil Berg", "due": "2026-10-15", "status": "in_progress",
+    "source": { "type": "control", "id": "A.8.20" },
+    "controls": ["A.8.20"], "risks": ["R-001"], "createdAt": "2026-09-22"
+  }],
+
+  "nextNumber": { "risk": 4, "action": 2, "evidence": 2 }
 }
 ```
 
@@ -340,16 +349,21 @@ Formatet är ett utkast. Det slutliga schemat definieras i `src/lib/project/sche
 
 - **Tillåtna värden:**
   - status: `not_assessed`, `fulfilled`, `partial` eller `not_fulfilled`
-  - behandling: `reduce`, `share`, `accept`, `avoid` eller `undecided`
+  - behandling: `undecided`, `reduce`, `share`, `accept` eller `avoid`
+  - åtgärdsstatus: `not_started`, `in_progress` eller `done`
+  - evidensens källa: `manual` eller `automatic`
+- **Fasta ID:n.** Risker (`R-001`), åtgärder (`ATG-001`) och evidens (`EV-001`) får löpnummer från `nextNumber`. Ett ID återanvänds aldrig, inte ens när posten tas bort.
 - **Beräknade värden sparas aldrig.** Det gäller riskvärde, nivå, faktisk restrisk och uppfyllnadsgrad.
 - **Kontroller som inte finns i `controls`** tolkas som `not_assessed`, alltså tillämpliga men ännu inte bedömda.
+- **Fält som saknas** fylls i med standardvärden vid inläsning, så filen behöver inte innehålla tomma fält.
+- **Kopplingar mot ramverket** (okända kontroll-ID:n, bortvald kontroll som är kopplad till en risk) kontrolleras med `checkAgainstFramework()` i `project.ts`.
 
 ## 6. Lägga till ett nytt ramverk
 
 1. **Skapa filen** `src/lib/frameworks/<id>-<version>.yaml` enligt schemat i `schema.ts`. Använd `iso27001-2022.yaml` som mall.
    - Alla ID:n ska vara fullständiga textsträngar.
    - Sätt `soa: true` bara på avsnitt som ska ingå i en SoA.
-2. **Registrera ramverket** i `src/lib/frameworks/index.ts`.
+2. **Registrera ramverket** i `src/lib/frameworks/index.ts`: importera YAML-filen, lägg den i `available` och ta bort posten ur `upcoming` om den fanns där.
 3. **Skriv ett test** `<id>.test.ts` som låser antalet kontroller per grupp, på samma sätt som `iso27001.test.ts`.
 4. **Kör kontrollerna:** `npm test` och `npm run check`.
 5. **Dokumentera ändringar** i ARCHITECTURE.md om ramverket kräver ändringar i schemat. Nya fält är alltid valfria.
@@ -364,12 +378,18 @@ Formatet är ett utkast. Det slutliga schemat definieras i `src/lib/project/sche
 
 ## 8. Faser
 
-| Fas | Innehåll | Status |
-|---|---|---|
-| **0 · Grund** | Projektuppsättning, ISO 27001 som YAML med schema och test | Pågår |
-| **1 · Projektfil** | Schema för `.grc.json`, store, öppna/spara/autospara, import av gamla exporter | |
-| **2 · Kontroller** | Grundkrav, Annex A och SoA med samma funktioner som det gamla verktyget | |
-| **3 · Riskarbete** | Riskmetod, riskregister, riskdetalj, koppling risk ↔ kontroll | |
-| **4 · Resultat** | Översikt, åtgärdsplan och rapport | |
-| **5 · Leverans** | Bygge till en enda HTML-fil, startsida med senaste arbeten | |
-| **6 · Fler ramverk** | NIS2, CIS Controls v8, DORA | |
+Faserna följer [Plan 2.0](docs/plan-2.0.md). Verktyget ska gå att använda efter varje milstolpe.
+
+| Fas | Innehåll | Milstolpe | Status |
+|---|---|---|---|
+| **0 · Kodgrund** | Projektuppsättning, ramverk som YAML, projektfilens datamodell, bygge till en HTML-fil | | Klar |
+| **1 · Filsparande** | Spara, Spara som, autospara, sparstatus, varning vid stängning | | |
+| **2 · Startsida** | Nytt arbete, öppna från fil, senaste arbeten | **M1:** ersätter dagens verktyg | |
+| **3 · Risk** | Riskmetod, riskregister, riskdetalj, koppling risk ↔ kontroll, typrisker | | |
+| **4 · Bilagor** | Evidens i mapp bredvid projektfilen, kontrollsumma, "saknar evidens" | | |
+| **5 · Åtgärdsplan** | Åtgärder från kontroller och risker, riskbehandlingsplan enligt 6.1.3 | **M2:** hela ISO-cykeln | |
+| **6 · Dashboard** | Uppfyllnad, riskprofil, åtgärder, redo för revision | | |
+| **7 · Progress** | Jämförelse mellan två bedömningar | **M3:** uppföljning över tid | |
+| **8 · Lansering** | Rapporter, kundtest, test på Mac och Windows, instruktion | **M4:** skarp version | |
+
+Fas 3 och 4 kan göras parallellt, liksom fas 6 och 7. Fler ramverk (NIS2, CIS Controls v8, DORA), CloudSecComp och en skrivbordsversion kommer efter M4.

@@ -1,89 +1,42 @@
-<script>
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from './assets/vite.svg'
-  import heroImg from './assets/hero.png'
-  import Counter from './lib/Counter.svelte'
+<script lang="ts">
+  // Fas 0: ett skal som visar att bygget, ramverken och datamodellen fungerar.
+  // Startsidan med "Nytt arbete" och "Öppna" byggs i fas 2, sparandet i fas 1.
+  import { FRAMEWORKS, countControls } from './lib/frameworks'
+  import { PROJECT_SCHEMA_VERSION } from './lib/project/schema'
+
+  const version = __APP_VERSION__
 </script>
 
-<section id="center">
-  <div class="hero">
-    <img src={heroImg} class="base" width="170" height="179" alt="" />
-    <img src={svelteLogo} class="framework" alt="Svelte logo" />
-    <img src={viteLogo} class="vite" alt="Vite logo" />
+<header class="app">
+  <div class="wrap">
+    <div class="eyebrow">Method</div>
+    <h1>GRC-verktyget</h1>
   </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/App.svelte</code> and save to test <code>HMR</code></p>
-  </div>
-  <Counter />
-</section>
+</header>
 
-<div class="ticks"></div>
-
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true">
-      <use href="/icons.svg#documentation-icon"></use>
-    </svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank" rel="noreferrer">
-          <img class="logo" src={viteLogo} alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://svelte.dev/" target="_blank" rel="noreferrer">
-          <img class="button-icon" src={svelteLogo} alt="" />
-          Learn more
-        </a>
-      </li>
+<main class="wrap">
+  <section class="card">
+    <h2>Ramverk</h2>
+    <ul class="frameworks">
+      {#each FRAMEWORKS as entry (entry.id + entry.version)}
+        <li class:upcoming={!entry.framework}>
+          <span class="name">{entry.name}</span>
+          {#if entry.framework}
+            <span class="meta">
+              {countControls(entry.framework, 'clauses')} krav ·
+              {countControls(entry.framework, 'annex-a')} kontroller
+            </span>
+          {:else}
+            <span class="badge">Kommer</span>
+          {/if}
+        </li>
+      {/each}
     </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true">
-      <use href="/icons.svg#social-icon"></use>
-    </svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li>
-        <a href="https://github.com/vitejs/vite" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#github-icon"></use>
-          </svg>
-          GitHub
-        </a>
-      </li>
-      <li>
-        <a href="https://chat.vite.dev/" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#discord-icon"></use>
-          </svg>
-          Discord
-        </a>
-      </li>
-      <li>
-        <a href="https://x.com/vite_js" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#x-icon"></use>
-          </svg>
-          X.com
-        </a>
-      </li>
-      <li>
-        <a href="https://bsky.app/profile/vite.dev" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#bluesky-icon"></use>
-          </svg>
-          Bluesky
-        </a>
-      </li>
-    </ul>
-  </div>
-</section>
+  </section>
 
-<div class="ticks"></div>
-<section id="spacer"></section>
+  <p class="info">Bedömningen sparas som en fil i kundens mapp. Inget lagras hos Method IT.</p>
+</main>
+
+<footer class="wrap">
+  Version {version} · projektfilformat {PROJECT_SCHEMA_VERSION}
+</footer>

@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "tool": "method-grc",
+  "id": "0f8c2b7e-3a51-4d7e-9b6a-2c1e5f4d3a90",
+  "client": { "name": "Exempelbolaget AB" },
+  "framework": { "id": "iso27001", "version": "2022" },
+  "createdAt": "2026-09-02T09:00:00Z",
+  "updatedAt": "2026-09-22T14:42:00Z",
+
+  "riskMethod": {
+    "consequence": {
+      "types": ["Verksamhet och ekonomi", "Information och anseende"],
+      "levels": [
+        { "level": 1, "name": "Försumbar", "descriptions": ["Ingen märkbar påverkan", "Ingen extern kännedom"] },
+        { "level": 2, "name": "Begränsad", "descriptions": ["Kortvarig störning", "Enstaka klagomål"] },
+        { "level": 3, "name": "Måttlig", "descriptions": ["Störning i flera dagar", "Lokal uppmärksamhet"] },
+        { "level": 4, "name": "Allvarlig", "descriptions": ["Stor ekonomisk förlust", "Nationell uppmärksamhet"] },
+        { "level": 5, "name": "Kritisk", "descriptions": ["Verksamheten hotas", "Varaktigt förtroendetapp"] }
+      ]
+    },
+    "likelihood": {
+      "levels": [
+        { "level": 1, "name": "Mycket osannolik", "frequency": "Mer sällan än vart 10:e år", "interpretation": "" },
+        { "level": 2, "name": "Osannolik", "frequency": "Vart 5–10:e år", "interpretation": "" },
+        { "level": 3, "name": "Möjlig", "frequency": "Vart 1–5:e år", "interpretation": "" },
+        { "level": 4, "name": "Sannolik", "frequency": "Varje år", "interpretation": "" },
+        { "level": 5, "name": "Mycket sannolik", "frequency": "Flera gånger per år", "interpretation": "" }
+      ]
+    },
+    "acceptanceThreshold": 6,
+    "reviewIntervalMonths": 12,
+    "approvedBy": "Anna Andersson, vd",
+    "approvedAt": "2026-09-22"
+  },
+
+  "risks": [
+    {
+      "id": "R-001",
+      "title": "Obehörig åtkomst via öppen fjärrskrivbordsport",
+      "threat": "Extern angripare",
+      "vulnerability": "Port 3389 öppen mot internet",
+      "assets": ["Filserver"],
+      "owner": "Bertil Berg, IT-chef",
+      "before": { "consequence": 4, "likelihood": 4 },
+      "planned": { "consequence": 4, "likelihood": 1 },
+      "treatment": "reduce",
+      "controls": [
+        { "control": "A.8.20", "effect": "high", "type": "preventive" },
+        { "control": "A.5.15" }
+      ],
+      "identifiedAt": "2026-09-02",
+      "lastAssessedAt": "2026-09-22",
+      "history": [{ "at": "2026-09-09T10:00:00Z", "by": "Konsult K.", "text": "A.5.15 kopplad" }]
+    },
+    {
+      "id": "R-003",
+      "title": "Förlust av data vid ransomware",
+      "owner": "Bertil Berg, IT-chef",
+      "before": { "consequence": 5, "likelihood": 3 },
+      "treatment": "undecided",
+      "identifiedAt": "2026-09-09"
+    }
+  ],
+
+  "controls": {
+    "6.1.2": { "status": "fulfilled", "comment": "Riskmetoden fastställd 2026-09-22." },
+    "A.8.20": {
+      "status": "partial",
+      "parts": { "technical": "not_fulfilled", "organizational": "fulfilled" },
+      "comment": "Nätverkspolicy finns, men port 3389 är öppen i två regler.",
+      "owner": "Bertil Berg, IT-chef",
+      "evidence": [
+        {
+          "id": "EV-001",
+          "file": "evidens/Natverkspolicy_v2.1.pdf",
+          "size": 348160,
+          "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+          "source": "manual",
+          "addedBy": "Cecilia Carlsson",
+          "addedAt": "2026-09-18T11:20:00Z"
+        }
+      ],
+      "updated": { "at": "2026-09-22T14:40:00Z", "by": "Konsult K." }
+    },
+    "A.7.4": { "status": "not_assessed", "applicable": false, "soaJustification": "Ingen egen fysisk lokal; kontoret hyrs med bevakning som ingår." }
+  },
+
+  "actions": [
+    {
+      "id": "ATG-001",
+      "title": "Stäng port 3389 och inför säker fjärråtkomst",
+      "owner": "Bertil Berg",
+      "due": "2026-10-15",
+      "status": "in_progress",
+      "source": { "type": "control", "id": "A.8.20" },
+      "controls": ["A.8.20"],
+      "risks": ["R-001"],
+      "createdAt": "2026-09-22"
+    }
+  ],
+
+  "nextNumber": { "risk": 4, "action": 2, "evidence": 2 }
+}
